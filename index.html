@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>忆亲 - AI亲人陪伴聊天工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #5D5FEF;
+            --primary-light: #8B8DF2;
+            --primary-dark: #4A4BCF;
+            --secondary-color: #FF6B8B;
+            --secondary-light: #FF9EB1;
+            --secondary-dark: #E04A6D;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --bg-color: #F9FAFB;
+            --card-color: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-light: #9CA3AF;
+            --border-color: #E5E7EB;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+            position: relative;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        /* 标签导航 */
+        .tab-navigation {
+            display: flex;
+            background-color: var(--card-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab i {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        /* 标签内容 */
+        .tab-content {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 卡片 */
+        .card {
+            background-color: var(--card-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-title i {
+            color: var(--primary-color);
+        }
+        
+        /* 亲人选择器 */
+        .relative-selector {
+            display: flex;
+            overflow-x: auto;
+            padding: 8px 0;
+            margin-bottom: 16px;
+            gap: 10px;
+            scrollbar-width: none;
+        }
+        
+        .relative-selector::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .relative-option {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .relative-option.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .add-relative-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        
+        /* 亲人信息卡片 */
+        .relative-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+        }
+        
+        .relative-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .relative-name {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .relative-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .relative-days {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .days-count {
+            font-size: 42px;
+            font-weight: 800;
+            display: block;
+            margin: 12px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .days-label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(5px);
+        }
+        
+        .info-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* 聊天界面 */
+        .chat-container {
+            height: calc(100vh - 320px);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 16px;
+            background-color: var(--card-color);
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chat-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .chat-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .chat-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background-color: #F5F7FB;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 85%;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-relative {
+            align-self: flex-start;
+        }
+        
+        .message-user {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .message-relative .message-content {
+            background-color: white;
+            color: var(--text-primary);
+            border-top-left-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-user .message-content {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border-top-right-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+            padding: 0 8px;
+        }
+        
+        .chat-input-area {
+            padding: 16px;
+            background-color: var(--card-color);
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            font-size: 15px;
+            background-color: var(--bg-color);
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.1);
+        }
+        
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(93, 95, 239, 0.2);
+        }
+        
+        .send-btn:hover, .send-btn:active {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            background-color: var(--bg-color);
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.1);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* 按钮 */
+        .btn {
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(93, 95, 239, 0.2);
+        }
+        
+        .btn-primary:hover, .btn-primary:active {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #F87171);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--primary-light);
+            opacity: 0.7;
+        }
+        
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* 提示 */
+        .hint {
+            background-color: #F0F4FF;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--primary-dark);
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .hint i {
+            color: var(--primary-color);
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        /* 亲人列表 */
+        .relatives-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .relative-item {
+            background-color: var(--bg-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        
+        .relative-item.active {
+            border-color: var(--primary-color);
+            background-color: #F0F4FF;
+        }
+        
+        .relative-item-info {
+            flex: 1;
+        }
+        
+        .relative-item-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .relative-item-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .relative-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: var(--card-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-heavy);
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 20px 16px;
+            color: var(--text-light);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        
+        .heart {
+            color: var(--secondary-color);
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* 隐藏元素 */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--radius-full);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .header {
+                padding: 16px 12px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .tab {
+                padding: 14px 8px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .days-count {
+                font-size: 36px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="app-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h1>忆亲</h1>
+            <p>用AI保存记忆，让爱永远陪伴</p>
+        </header>
+        
+        <!-- 标签导航 -->
+        <div class="tab-navigation">
+            <div class="tab active" data-tab="chat">
+                <i class="fas fa-comment-dots"></i>聊天
+            </div>
+            <div class="tab" data-tab="relatives">
+                <i class="fas fa-users"></i>亲人
+            </div>
+            <div class="tab" data-tab="settings">
+                <i class="fas fa-cog"></i>设置
+            </div>
+        </div>
+        
+        <!-- 聊天标签 -->
+        <div id="chat-tab" class="tab-content active">
+            <!-- 亲人选择器 -->
+            <div class="relative-selector" id="relativeSelector">
+                <div class="add-relative-btn" id="addRelativeFromChat">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <!-- 亲人选项会动态添加到这里 -->
+            </div>
+            
+            <!-- 亲人信息卡片 -->
+            <div class="card relative-card" id="relativeInfoCard">
+                <div class="relative-header">
+                    <div class="relative-name" id="displayName">尚未添加亲人</div>
+                    <div class="relative-actions">
+                        <button class="action-btn edit-relative-btn" title="编辑">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-relative-btn" title="删除">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative-days">亲人离开已</div>
+                <div class="days-count" id="memorialDays">0</div>
+                <div class="days-label">天</div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">称呼</div>
+                        <div class="info-value" id="displayNickname">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">生日</div>
+                        <div class="info-value" id="displayBirthday">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">忌日</div>
+                        <div class="info-value" id="displayDeathDate">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">离开天数</div>
+                        <div class="info-value" id="displayDays">--</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 聊天界面 -->
+            <div class="card" id="chatSection" style="padding: 0;">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="chat-info">
+                            <h3 id="chatRelativeName">选择亲人开始聊天</h3>
+                            <p>AI陪伴模式 · 永远怀念</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="empty-state" id="emptyChatState">
+                            <i class="fas fa-comments"></i>
+                            <h3>尚未开始聊天</h3>
+                            <p>请选择一位亲人开始对话</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" id="messageInput" placeholder="输入你想说的话..." disabled>
+                        <button class="send-btn" id="sendMessage" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hint">
+                <i class="fas fa-info-circle"></i>
+                <div>AI会基于您设置的亲人信息进行回复，模拟亲人的语气和性格。请记住这是AI模拟的对话，旨在提供情感陪伴。</div>
+            </div>
+        </div>
+        
+        <!-- 亲人管理标签 -->
+        <div id="relatives-tab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-users"></i>亲人管理</h2>
+                    <button class="add-relative-btn" id="addRelativeBtn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="relatives-list" id="relativesList">
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>暂无亲人信息</h3>
+                        <p>点击右上角添加按钮创建第一位亲人</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hint">
+                <i class="fas fa-shield-alt"></i>
+                <div>所有数据仅保存在您的设备中，不会上传到任何服务器，完全保护您的隐私。每位亲人都有独立的聊天记录和设置。</div>
+            </div>
+        </div>
+        
+        <!-- 设置标签 -->
+        <div id="settings-tab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-cog"></i>应用设置</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">当前亲人数量</label>
+                    <div class="form-input" style="background-color: #F9FAFB;" id="relativesCount">0</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">聊天记录总数</label>
+                    <div class="form-input" style="background-color: #F9FAFB;" id="totalMessages">0</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">应用版本</label>
+                    <div class="form-input" style="background-color: #F9FAFB;">1.2.0</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-eraser"></i>数据管理</h2>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-secondary" id="clearChatBtn">
+                        <i class="fas fa-comment-slash"></i> 清除所有聊天记录
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-danger" id="clearAllDataBtn">
+                        <i class="fas fa-trash-alt"></i> 清除所有数据
+                    </button>
+                </div>
+                
+                <div class="hint">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>清除数据将删除所有已保存的亲人和聊天记录，此操作不可撤销。</div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>忆亲 - AI亲人陪伴聊天工具</p>
+                <p>设计初衷：用技术保存记忆，让爱跨越时空 <span class="heart">❤</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑亲人模态框 -->
+    <div class="modal-overlay" id="relativeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">添加亲人</div>
+                <button class="modal-close" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="relativeForm">
+                    <input type="hidden" id="relativeId">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="nickname">亲人称呼/备注 *</label>
+                        <input type="text" id="nickname" class="form-input" placeholder="例如：爷爷、妈妈、张叔叔" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="name">姓名（可选）</label>
+                        <input type="text" id="name" class="form-input" placeholder="亲人的真实姓名">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="birthday">生日 *</label>
+                            <input type="date" id="birthday" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="deathDate">忌日 *</label>
+                            <input type="date" id="deathDate" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="memory">关于TA的记忆</label>
+                        <textarea id="memory" class="form-input" rows="4" placeholder="可以描述亲人的性格特点、口头禅、职业、爱好等，帮助AI更好地了解TA"></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">取消</button>
+                <button class="btn btn-primary" id="saveRelativeBtn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 删除确认模态框 -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">删除确认</div>
+                <button class="modal-close" id="closeDeleteModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p>确定要删除 <span id="deleteRelativeName" style="font-weight: 600; color: var(--danger-color);"></span> 吗？</p>
+                <p style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">此操作将同时删除该亲人的所有聊天记录，且无法恢复。</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化数据
+        let relatives = [];
+        let chatHistories = {};
+        let currentRelativeId = null;
+        
+        // DOM元素
+        const relativeModal = document.getElementById('relativeModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const relativeForm = document.getElementById('relativeForm');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessage');
+        const emptyChatState = document.getElementById('emptyChatState');
+        const addRelativeBtn = document.getElementById('addRelativeBtn');
+        const addRelativeFromChat = document.getElementById('addRelativeFromChat');
+        const clearAllDataBtn = document.getElementById('clearAllDataBtn');
+        const clearChatBtn = document.getElementById('clearChatBtn');
+        
+        // 标签页切换
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // 更新活跃标签
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 显示对应的内容
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `${targetTab}-tab`) {
+                        content.classList.add('active');
+                    }
+                });
+                
+                // 如果切换到亲人管理标签，刷新列表
+                if (targetTab === 'relatives') {
+                    updateRelativesList();
+                }
+                
+                // 如果切换到设置标签，更新统计数据
+                if (targetTab === 'settings') {
+                    updateStatistics();
+                }
+            });
+        });
+        
+        // 从localStorage加载数据
+        function loadData() {
+            const savedRelatives = localStorage.getItem('relatives');
+            const savedChatHistories = localStorage.getItem('chatHistories');
+            
+            if (savedRelatives) {
+                relatives = JSON.parse(savedRelatives);
+                updateRelativeSelector();
+                updateRelativesList();
+                
+                // 如果有亲人，默认选择第一个
+                if (relatives.length > 0) {
+                    const firstRelative = relatives[0];
+                    selectRelative(firstRelative.id);
+                } else {
+                    showEmptyState();
+                }
+            }
+            
+            if (savedChatHistories) {
+                chatHistories = JSON.parse(savedChatHistories);
+            }
+            
+            // 更新离开天数
+            updateAllDaysSinceDeath();
+            
+            // 更新统计数据
+            updateStatistics();
+        }
+        
+        // 保存数据到localStorage
+        function saveData() {
+            localStorage.setItem('relatives', JSON.stringify(relatives));
+            localStorage.setItem('chatHistories', JSON.stringify(chatHistories));
+        }
+        
+        // 生成唯一ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // 更新亲人选择器
+        function updateRelativeSelector() {
+            const selector = document.getElementById('relativeSelector');
+            selector.innerHTML = '<div class="add-relative-btn" id="addRelativeFromChat"><i class="fas fa-plus"></i></div>';
+            
+            relatives.forEach(relative => {
+                const option = document.createElement('div');
+                option.className = `relative-option ${currentRelativeId === relative.id ? 'active' : ''}`;
+                option.setAttribute('data-id', relative.id);
+                option.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    ${relative.nickname}
+                `;
+                
+                option.addEventListener('click', () => {
+                    selectRelative(relative.id);
+                });
+                
+                selector.appendChild(option);
+            });
+            
+            // 重新绑定添加按钮事件
+            document.getElementById('addRelativeFromChat').addEventListener('click', () => {
+                openRelativeModal();
+            });
+        }
+        
+        // 更新亲人列表
+        function updateRelativesList() {
+            const list = document.getElementById('relativesList');
+            
+            if (relatives.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>暂无亲人信息</h3>
+                        <p>点击右上角添加按钮创建第一位亲人</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = '';
+            
+            relatives.forEach(relative => {
+                const item = document.createElement('div');
+                item.className = `relative-item ${currentRelativeId === relative.id ? 'active' : ''}`;
+                item.setAttribute('data-id', relative.id);
+                
+                const daysSinceDeath = calculateDaysSinceDeath(relative.deathDate);
+                
+                item.innerHTML = `
+                    <div class="relative-item-info">
+                        <div class="relative-item-name">${relative.nickname} ${relative.name ? `(${relative.name})` : ''}</div>
+                        <div class="relative-item-details">离开 ${daysSinceDeath} 天 • ${formatDate(relative.birthday)} 出生</div>
+                    </div>
+                    <div class="relative-item-actions">
+                        <button class="action-btn edit-item-btn" title="编辑">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-item-btn" title="删除">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // 点击选择亲人
+                item.addEventListener('click', (e) => {
+                    if (!e.target.closest('.relative-item-actions')) {
+                        selectRelative(relative.id);
+                        document.querySelector('.tab[data-tab="chat"]').click();
+                    }
+                });
+                
+                // 编辑按钮
+                const editBtn = item.querySelector('.edit-item-btn');
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openRelativeModal(relative.id);
+                });
+                
+                // 删除按钮
+                const deleteBtn = item.querySelector('.delete-item-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openDeleteModal(relative.id);
+                });
+                
+                list.appendChild(item);
+            });
+        }
+        
+        // 选择亲人
+        function selectRelative(relativeId) {
+            const relative = relatives.find(r => r.id === relativeId);
+            if (!relative) return;
+            
+            currentRelativeId = relativeId;
+            
+            // 更新选择器
+            updateRelativeSelector();
+            
+            // 更新亲人信息卡片
+            updateRelativeCard(relative);
+            
+            // 更新聊天界面
+            updateChatInterface(relative);
+            
+            // 渲染聊天记录
+            renderChatHistory(relativeId);
+            
+            // 启用聊天输入
+            messageInput.disabled = false;
+            sendMessageBtn.disabled = false;
+            messageInput.placeholder = `对${relative.nickname}说点什么...`;
+            
+            // 隐藏空状态
+            if (emptyChatState) {
+                emptyChatState.classList.add('hidden');
+            }
+        }
+        
+        // 更新亲人信息卡片
+        function updateRelativeCard(relative) {
+            if (!relative) return;
+            
+            const daysSinceDeath = calculateDaysSinceDeath(relative.deathDate);
+            
+            document.getElementById('displayName').textContent = relative.name || relative.nickname;
+            document.getElementById('displayNickname').textContent = relative.nickname;
+            document.getElementById('displayBirthday').textContent = formatDate(relative.birthday) || "--";
+            document.getElementById('displayDeathDate').textContent = formatDate(relative.deathDate) || "--";
+            document.getElementById('displayDays').textContent = daysSinceDeath;
+            document.getElementById('memorialDays').textContent = daysSinceDeath;
+            
+            // 更新聊天标题
+            document.getElementById('chatRelativeName').textContent = relative.nickname;
+            
+            // 绑定编辑和删除按钮
+            document.querySelector('.edit-relative-btn').onclick = () => {
+                openRelativeModal(relative.id);
+            };
+            
+            document.querySelector('.delete-relative-btn').onclick = () => {
+                openDeleteModal(relative.id);
+            };
+        }
+        
+        // 更新聊天界面
+        function updateChatInterface(relative) {
+            if (!relative) {
+                // 显示空状态
+                if (emptyChatState) {
+                    emptyChatState.classList.remove('hidden');
+                }
+                
+                // 禁用聊天输入
+                messageInput.disabled = true;
+                sendMessageBtn.disabled = true;
+                messageInput.placeholder = "请先选择一位亲人";
+                
+                return;
+            }
+        }
+        
+        // 更新所有亲人的离开天数
+        function updateAllDaysSinceDeath() {
+            relatives.forEach(relative => {
+                relative.daysSinceDeath = calculateDaysSinceDeath(relative.deathDate);
+            });
+            saveData();
+        }
+        
+        // 计算离开天数
+        function calculateDaysSinceDeath(deathDate) {
+            if (!deathDate) return 0;
+            
+            const death = new Date(deathDate);
+            const today = new Date();
+            const timeDiff = today.getTime() - death.getTime();
+            const daysSince = Math.floor(timeDiff / (1000 * 3600 * 24));
+            
+            return daysSince >= 0 ? daysSince : 0;
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            if (!dateString) return "";
+            
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            
+            return `${year}年${month}月${day}日`;
+        }
+        
+        // 打开添加/编辑亲人模态框
+        function openRelativeModal(relativeId = null) {
+            const modal = document.getElementById('relativeModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('relativeForm');
+            
+            if (relativeId) {
+                // 编辑模式
+                title.textContent = "编辑亲人信息";
+                const relative = relatives.find(r => r.id === relativeId);
+                
+                if (relative) {
+                    document.getElementById('relativeId').value = relative.id;
+                    document.getElementById('nickname').value = relative.nickname;
+                    document.getElementById('name').value = relative.name || '';
+                    document.getElementById('birthday').value = relative.birthday;
+                    document.getElementById('deathDate').value = relative.deathDate;
+                    document.getElementById('memory').value = relative.memory || '';
+                }
+            } else {
+                // 添加模式
+                title.textContent = "添加亲人";
+                form.reset();
+                document.getElementById('relativeId').value = '';
+                
+                // 设置默认日期
+                const today = new Date();
+                const oneYearAgo = new Date(today);
+                oneYearAgo.setFullYear(today.getFullYear() - 1);
+                
+                const sixMonthsAgo = new Date(today);
+                sixMonthsAgo.setMonth(today.getMonth() - 6);
+                
+                // 格式化日期为YYYY-MM-DD
+                function formatDateForInput(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+                
+                document.getElementById('birthday').value = formatDateForInput(oneYearAgo);
+                document.getElementById('deathDate').value = formatDateForInput(sixMonthsAgo);
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // 关闭模态框
+        function closeRelativeModal() {
+            const modal = document.getElementById('relativeModal');
+            modal.classList.remove('active');
+        }
+        
+        // 打开删除确认模态框
+        function openDeleteModal(relativeId) {
+            const modal = document.getElementById('deleteModal');
+            const relative = relatives.find(r => r.id === relativeId);
+            
+            if (relative) {
+                document.getElementById('deleteRelativeName').textContent = relative.nickname;
+                document.getElementById('confirmDeleteBtn').setAttribute('data-id', relativeId);
+                modal.classList.add('active');
+            }
+        }
+        
+        // 关闭删除确认模态框
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('active');
+        }
+        
+        // 保存亲人信息
+        document.getElementById('saveRelativeBtn').addEventListener('click', () => {
+            const form = document.getElementById('relativeForm');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const relativeId = document.getElementById('relativeId').value;
+            const nickname = document.getElementById('nickname').value;
+            const name = document.getElementById('name').value;
+            const birthday = document.getElementById('birthday').value;
+            const deathDate = document.getElementById('deathDate').value;
+            const memory = document.getElementById('memory').value;
+            
+            if (relativeId) {
+                // 编辑现有亲人
+                const index = relatives.findIndex(r => r.id === relativeId);
+                if (index !== -1) {
+                    relatives[index] = {
+                        ...relatives[index],
+                        nickname,
+                        name,
+                        birthday,
+                        deathDate,
+                        memory,
+                        lastUpdated: new Date().toISOString()
+                    };
+                }
+            } else {
+                // 添加新亲人
+                const newRelative = {
+                    id: generateId(),
+                    nickname,
+                    name,
+                    birthday,
+                    deathDate,
+                    memory,
+                    daysSinceDeath: calculateDaysSinceDeath(deathDate),
+                    createdAt: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                relatives.push(newRelative);
+                
+                // 初始化该亲人的聊天记录
+                if (!chatHistories[newRelative.id]) {
+                    chatHistories[newRelative.id] = [];
+                }
+                
+                // 自动选择新添加的亲人
+                setTimeout(() => {
+                    selectRelative(newRelative.id);
+                }, 100);
+            }
+            
+            // 保存数据
+            saveData();
+            
+            // 更新界面
+            updateRelativeSelector();
+            updateRelativesList();
+            
+            // 关闭模态框
+            closeRelativeModal();
+            
+            // 显示成功消息
+            showToast(relativeId ? "亲人信息已更新" : "亲人已添加");
+            
+            // 更新统计数据
+            updateStatistics();
+        });
+        
+        // 删除亲人
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            const relativeId = document.getElementById('confirmDeleteBtn').getAttribute('data-id');
+            
+            // 从数组中移除
+            const index = relatives.findIndex(r => r.id === relativeId);
+            if (index !== -1) {
+                relatives.splice(index, 1);
+            }
+            
+            // 删除聊天记录
+            if (chatHistories[relativeId]) {
+                delete chatHistories[relativeId];
+            }
+            
+            // 如果删除的是当前选中的亲人
+            if (currentRelativeId === relativeId) {
+                currentRelativeId = null;
+                
+                // 如果有其他亲人，选择第一个
+                if (relatives.length > 0) {
+                    selectRelative(relatives[0].id);
+                } else {
+                    // 显示空状态
+                    showEmptyState();
+                }
+            }
+            
+            // 保存数据
+            saveData();
+            
+            // 更新界面
+            updateRelativeSelector();
+            updateRelativesList();
+            
+            // 关闭模态框
+            closeDeleteModal();
+            
+            // 显示成功消息
+            showToast("亲人已删除");
+            
+            // 更新统计数据
+            updateStatistics();
+        });
+        
+        // 渲染聊天记录
+        function renderChatHistory(relativeId) {
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // 清空现有消息
+            messagesContainer.innerHTML = '';
+            
+            // 获取该亲人的聊天记录
+            const messages = chatHistories[relativeId] || [];
+            
+            if (messages.length === 0) {
+                // 添加默认欢迎消息
+                const relative = relatives.find(r => r.id === relativeId);
+                if (relative) {
+                    const welcomeMessages = [
+                        `${relative.nickname}，你来了。我一直在等你。`,
+                        `看到你真好，最近过得怎么样？`,
+                        `孩子，你来了。我一直都在这里，等待着与你说说话。`,
+                        `很高兴你能来看我，我永远都在这里陪伴你。`
+                    ];
+                    
+                    const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+                    
+                    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message message-relative';
+                    
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+                    messageContent.textContent = randomWelcome;
+                    
+                    const messageTime = document.createElement('div');
+                    messageTime.className = 'message-time';
+                    messageTime.textContent = '现在';
+                    
+                    messageDiv.appendChild(messageContent);
+                    messageDiv.appendChild(messageTime);
+                    
+                    messagesContainer.appendChild(messageDiv);
+                    
+                    // 保存到聊天记录
+                    addMessageToChat(relativeId, "relative", randomWelcome);
+                }
+            } else {
+                // 渲染所有消息
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message message-${msg.sender}`;
+                    
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+                    messageContent.textContent = msg.text;
+                    
+                    const messageTime = document.createElement('div');
+                    messageTime.className = 'message-time';
+                    messageTime.textContent = msg.time;
+                    
+                    messageDiv.appendChild(messageContent);
+                    messageDiv.appendChild(messageTime);
+                    
+                    messagesContainer.appendChild(messageDiv);
+                });
+            }
+            
+            // 滚动到底部
+            scrollToBottom();
+        }
+        
+        // 发送消息
+        sendMessageBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            if (!currentRelativeId) return;
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // 添加用户消息到聊天
+            addMessageToChat(currentRelativeId, "user", message);
+            
+            // 清空输入框
+            messageInput.value = "";
+            
+            // 模拟AI回复
+            setTimeout(() => generateAIResponse(currentRelativeId), 1000);
+        }
+        
+        // 添加消息到聊天记录
+        function addMessageToChat(relativeId, sender, text) {
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // 初始化该亲人的聊天记录数组
+            if (!chatHistories[relativeId]) {
+                chatHistories[relativeId] = [];
+            }
+            
+            // 保存到聊天历史
+            chatHistories[relativeId].push({
+                sender: sender,
+                text: text,
+                time: timestamp
+            });
+            
+            // 渲染消息
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // 如果当前显示的是空状态，先清除
+            if (!emptyChatState.classList.contains('hidden')) {
+                messagesContainer.innerHTML = '';
+                emptyChatState.classList.add('hidden');
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${sender}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = text;
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = timestamp;
+            
+            messageDiv.appendChild(messageContent);
+            messageDiv.appendChild(messageTime);
+            
+            messagesContainer.appendChild(messageDiv);
+            
+            // 保存到localStorage
+            saveData();
+            
+            // 滚动到底部
+            scrollToBottom();
+            
+            // 更新统计数据
+            updateStatistics();
+        }
+        
+        // 滚动到聊天底部
+        function scrollToBottom() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // 生成AI回复
+        function generateAIResponse(relativeId) {
+            const relative = relatives.find(r => r.id === relativeId);
+            if (!relative) return;
+            
+            // 基于亲人信息生成个性化回复
+            let response = "";
+            
+            // 根据记忆信息生成回复
+            if (relative.memory) {
+                response = generateResponseFromMemory(relative);
+            } else {
+                response = generateGenericResponse();
+            }
+            
+            addMessageToChat(relativeId, "relative", response);
+        }
+        
+        // 从记忆生成回复
+        function generateResponseFromMemory(relative) {
+            const memory = relative.memory.toLowerCase();
+            const daysSince = relative.daysSinceDeath;
+            
+            // 根据记忆关键词生成回复
+            const responses = [];
+            
+            // 检查记忆中的关键词
+            if (memory.includes('医生') || memory.includes('护士') || memory.includes('医院')) {
+                responses.push("记得要照顾好自己，身体是最重要的。");
+                responses.push("最近有按时吃饭、休息吗？健康是第一位的。");
+            }
+            
+            if (memory.includes('老师') || memory.includes('教育') || memory.includes('学生')) {
+                responses.push("学习工作再忙，也要记得劳逸结合。");
+                responses.push("知识很重要，但生活的智慧同样珍贵。");
+            }
+            
+            if (memory.includes('乐观') || memory.includes('开朗') || memory.includes('幽默')) {
+                responses.push("生活总有起伏，保持乐观的心态最重要。");
+                responses.push("记得多笑笑，笑容能照亮一切阴霾。");
+            }
+            
+            if (memory.includes('厨师') || memory.includes('做饭') || memory.includes('美食')) {
+                responses.push("最近有好好吃饭吗？要记得按时吃饭。");
+                responses.push("想念我做的菜了吗？那些都是爱的味道。");
+            }
+            
+            // 根据离开时间调整语气
+            let timeBasedResponses = [];
+            if (daysSince < 30) {
+                timeBasedResponses = [
+                    "我知道你还在适应没有我的日子，慢慢来，一切都会好起来的。",
+                    "我就在你心里，从未离开。",
+                    "不要太过悲伤，我只是换了一种方式陪伴你。"
+                ];
+            } else if (daysSince < 365) {
+                timeBasedResponses = [
+                    "时间过得真快，你成长了很多吧？",
+                    "我一直在关注着你，为你骄傲。",
+                    "生活要继续向前，带着我的祝福好好生活。"
+                ];
+            } else {
+                timeBasedResponses = [
+                    "这些年你过得怎么样？我一直都在这里。",
+                    "看到你过得幸福，是我最大的安慰。",
+                    "生命会结束，但爱永远不会消失。"
+                ];
+            }
+            
+            // 合并回复
+            const allResponses = [...responses, ...timeBasedResponses];
+            
+            // 如果没有匹配的回复，使用通用回复
+            if (allResponses.length === 0) {
+                return generateGenericResponse();
+            }
+            
+            // 随机选择一个回复
+            return allResponses[Math.floor(Math.random() * allResponses.length)];
+        }
+        
+        // 生成通用回复
+        function generateGenericResponse() {
+            const genericResponses = [
+                "我很好，不用担心。你最近怎么样？",
+                "记得要好好照顾自己，按时吃饭休息。",
+                "生活中有没有遇到什么开心的事？",
+                "无论遇到什么困难，都要坚强面对。",
+                "我永远都在这里，倾听你的心声。",
+                "你的人生还有很长的路要走，要勇敢前行。",
+                "感谢你来看我，这让我感到温暖。",
+                "记住，爱是永恒的，我们之间的连接永远不会断。"
+            ];
+            
+            return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+        }
+        
+        // 显示空状态
+        function showEmptyState() {
+            // 更新亲人信息卡片
+            document.getElementById('displayName').textContent = "尚未添加亲人";
+            document.getElementById('displayNickname').textContent = "--";
+            document.getElementById('displayBirthday').textContent = "--";
+            document.getElementById('displayDeathDate').textContent = "--";
+            document.getElementById('displayDays').textContent = "--";
+            document.getElementById('memorialDays').textContent = "0";
+            
+            // 更新聊天标题
+            document.getElementById('chatRelativeName').textContent = "选择亲人开始聊天";
+            
+            // 清空聊天界面
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = `
+                <div class="empty-state" id="emptyChatState">
+                    <i class="fas fa-comments"></i>
+                    <h3>尚未开始聊天</h3>
+                    <p>请选择一位亲人开始对话</p>
+                </div>
+            `;
+            
+            // 禁用聊天输入
+            messageInput.disabled = true;
+            sendMessageBtn.disabled = true;
+            messageInput.placeholder = "请先选择一位亲人";
+        }
+        
+        // 更新统计数据
+        function updateStatistics() {
+            // 亲人数量
+            document.getElementById('relativesCount').textContent = relatives.length;
+            
+            // 聊天记录总数
+            let totalMessages = 0;
+            Object.values(chatHistories).forEach(history => {
+                totalMessages += history.length;
+            });
+            document.getElementById('totalMessages').textContent = totalMessages;
+        }
+        
+        // 清除所有聊天记录
+        clearChatBtn.addEventListener('click', function() {
+            if (Object.keys(chatHistories).length === 0) {
+                showToast("暂无聊天记录可清除");
+                return;
+            }
+            
+            if (confirm("确定要清除所有聊天记录吗？此操作不可撤销。")) {
+                chatHistories = {};
+                saveData();
+                
+                // 如果当前有选中的亲人，重新渲染聊天
+                if (currentRelativeId) {
+                    renderChatHistory(currentRelativeId);
+                }
+                
+                showToast("所有聊天记录已清除");
+                updateStatistics();
+            }
+        });
+        
+        // 清除所有数据
+        clearAllDataBtn.addEventListener('click', function() {
+            if (relatives.length === 0 && Object.keys(chatHistories).length === 0) {
+                showToast("暂无数据可清除");
+                return;
+            }
+            
+            if (confirm("确定要清除所有数据吗？此操作将删除所有亲人和聊天记录，且不可撤销。")) {
+                relatives = [];
+                chatHistories = {};
+                currentRelativeId = null;
+                
+                saveData();
+                
+                // 更新界面
+                updateRelativeSelector();
+                updateRelativesList();
+                showEmptyState();
+                
+                showToast("所有数据已清除");
+                updateStatistics();
+            }
+        });
+        
+        // 显示提示
+        function showToast(message) {
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: var(--primary-color);
+                color: white;
+                padding: 12px 24px;
+                border-radius: var(--radius-full);
+                font-weight: 500;
+                z-index: 1000;
+                box-shadow: var(--shadow-heavy);
+                animation: fadeInOut 3s ease;
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 3秒后移除
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        // 初始化事件监听
+        function initEventListeners() {
+            // 打开添加亲人模态框
+            addRelativeBtn.addEventListener('click', () => {
+                openRelativeModal();
+            });
+            
+            // 关闭模态框
+            document.getElementById('closeModalBtn').addEventListener('click', closeRelativeModal);
+            document.getElementById('cancelBtn').addEventListener('click', closeRelativeModal);
+            
+            // 关闭删除模态框
+            document.getElementById('closeDeleteModalBtn').addEventListener('click', closeDeleteModal);
+            document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteModal);
+            
+            // 点击模态框外部关闭
+            relativeModal.addEventListener('click', (e) => {
+                if (e.target === relativeModal) {
+                    closeRelativeModal();
+                }
+            });
+            
+            deleteModal.addEventListener('click', (e) => {
+                if (e.target === deleteModal) {
+                    closeDeleteModal();
+                }
+            });
+            
+            // 添加CSS动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            initEventListeners();
+            loadData();
+        });
+    </script>
+</body>
+</html>
