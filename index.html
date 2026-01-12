@@ -310,6 +310,29 @@
             font-weight: 500;
         }
         
+        /* 新增：关系称呼设置 */
+        .relationship-settings {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-top: 16px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .relationship-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .relationship-display {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
         /* 聊天界面 */
         .chat-container {
             height: calc(100vh - 320px);
@@ -888,6 +911,15 @@
                         <div class="info-value" id="displayDays">--</div>
                     </div>
                 </div>
+                
+                <!-- 关系称呼显示 -->
+                <div class="relationship-settings hidden" id="relationshipDisplay">
+                    <div class="relationship-title">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>AI会以<span id="relativeRole">亲人</span>的身份称呼您为：</span>
+                    </div>
+                    <div class="relationship-display" id="userCallName">孩子</div>
+                </div>
             </div>
             
             <!-- 聊天界面 -->
@@ -928,7 +960,7 @@
             
             <div class="hint">
                 <i class="fas fa-info-circle"></i>
-                <div>AI会基于您设置的亲人信息和记忆，模拟亲人的真实性格、语气和情感。回复更加人性化、多样化。</div>
+                <div>AI会以亲人的身份与您对话。例如，如果您添加了"妈妈"，AI会以妈妈的身份称呼您为"孩子"。您可以在编辑亲人信息时设置AI对您的称呼。</div>
             </div>
         </div>
         
@@ -981,7 +1013,7 @@
                 
                 <div class="form-group">
                     <label class="form-label">应用版本</label>
-                    <div class="form-input" style="background-color: #F9FAFB;">2.0.0 - 情感增强版</div>
+                    <div class="form-input" style="background-color: #F9FAFB;">2.0.1 - 称呼修正版</div>
                 </div>
             </div>
             
@@ -1032,6 +1064,13 @@
                     <div class="form-group">
                         <label class="form-label" for="nickname">亲人称呼/备注 *</label>
                         <input type="text" id="nickname" class="form-input" placeholder="例如：爷爷、妈妈、张叔叔" required>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">这是您对亲人的称呼</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="userCallName">AI对您的称呼 *</label>
+                        <input type="text" id="userCallNameInput" class="form-input" placeholder="例如：孩子、宝贝、小宝" required value="孩子">
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">AI会以亲人的身份这样称呼您</div>
                     </div>
                     
                     <div class="form-group">
@@ -1082,7 +1121,7 @@
             
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
-                        <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
             </div>
         </div>
     </div>
@@ -1241,7 +1280,7 @@
                 item.innerHTML = `
                     <div class="relative-item-info">
                         <div class="relative-item-name">${relative.nickname} ${relative.name ? `(${relative.name})` : ''}</div>
-                        <div class="relative-item-details">离开 ${daysSinceDeath} 天 • ${formatDate(relative.birthday)} 出生</div>
+                        <div class="relative-item-details">AI称呼您：${relative.userCallName || '孩子'} • 离开 ${daysSinceDeath} 天</div>
                     </div>
                     <div class="relative-item-actions">
                         <button class="action-btn edit-item-btn" title="编辑">
@@ -1325,6 +1364,19 @@
             // 更新聊天标题
             document.getElementById('chatRelativeName').textContent = relative.nickname;
             
+            // 更新关系称呼显示
+            const relationshipDisplay = document.getElementById('relationshipDisplay');
+            const userCallNameElement = document.getElementById('userCallName');
+            const relativeRoleElement = document.getElementById('relativeRole');
+            
+            if (relative.userCallName) {
+                relationshipDisplay.classList.remove('hidden');
+                userCallNameElement.textContent = relative.userCallName;
+                relativeRoleElement.textContent = relative.nickname;
+            } else {
+                relationshipDisplay.classList.add('hidden');
+            }
+            
             // 绑定编辑和删除按钮
             document.querySelector('.edit-relative-btn').onclick = () => {
                 openRelativeModal(relative.id);
@@ -1400,6 +1452,7 @@
                 if (relative) {
                     document.getElementById('relativeId').value = relative.id;
                     document.getElementById('nickname').value = relative.nickname;
+                    document.getElementById('userCallNameInput').value = relative.userCallName || '孩子';
                     document.getElementById('name').value = relative.name || '';
                     document.getElementById('birthday').value = relative.birthday;
                     document.getElementById('deathDate').value = relative.deathDate;
@@ -1410,6 +1463,7 @@
                 title.textContent = "添加亲人";
                 form.reset();
                 document.getElementById('relativeId').value = '';
+                document.getElementById('userCallNameInput').value = '孩子';
                 
                 // 设置默认日期
                 const today = new Date();
@@ -1469,6 +1523,7 @@
             
             const relativeId = document.getElementById('relativeId').value;
             const nickname = document.getElementById('nickname').value;
+            const userCallName = document.getElementById('userCallNameInput').value;
             const name = document.getElementById('name').value;
             const birthday = document.getElementById('birthday').value;
             const deathDate = document.getElementById('deathDate').value;
@@ -1481,6 +1536,7 @@
                     relatives[index] = {
                         ...relatives[index],
                         nickname,
+                        userCallName,
                         name,
                         birthday,
                         deathDate,
@@ -1493,6 +1549,7 @@
                 const newRelative = {
                     id: generateId(),
                     nickname,
+                    userCallName,
                     name,
                     birthday,
                     deathDate,
@@ -1607,10 +1664,10 @@
                 const relative = relatives.find(r => r.id === relativeId);
                 if (relative) {
                     const welcomeMessages = [
-                        `${relative.nickname}，你来了。我一直在等你呢。`,
-                        `看到你真好，孩子。最近过得怎么样？`,
-                        `你来了，我亲爱的${relative.nickname}。我一直都在这里，想和你说说话。`,
-                        `我的${relative.nickname}，你能来看我，我真的很开心。`
+                        `${relative.userCallName || '孩子'}，你来了。我一直在等你呢。`,
+                        `看到你真好，${relative.userCallName || '孩子'}。最近过得怎么样？`,
+                        `${relative.userCallName || '孩子'}，你来了。我一直都在这里，想和你说说话。`,
+                        `我的${relative.userCallName || '孩子'}，你能来看我，我真的很开心。`
                     ];
                     
                     const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
@@ -1843,12 +1900,12 @@
             addMessageToChat(relativeId, "relative", response);
         }
         
-        // 生成丰富的回复
+        // 生成丰富的回复 - 修正称呼关系
         function generateRichResponse(relative, analysis, userMessage) {
             const daysSince = relative.daysSinceDeath;
             const memory = relative.memory || "";
-            const nickname = relative.nickname;
-            const name = relative.name || nickname;
+            const nickname = relative.nickname; // 亲人的称呼
+            const userCallName = relative.userCallName || "孩子"; // AI对用户的称呼
             
             // 根据情绪和话题选择回复类别
             let responseCategory = "general";
@@ -1865,94 +1922,94 @@
             else if (daysSince < 365) timeTone = "mid";
             else timeTone = "long";
             
-            // 回复库 - 大幅扩展
+            // 回复库 - 修正称呼关系
             const responseLibrary = {
-                // 问候类回复
+                // 问候类回复 - 正确称呼用户
                 greeting: [
-                    `我的${nickname}，你来了。看到你的消息，我心里暖洋洋的。`,
-                    `孩子，你来了。我一直在想你，今天过得好吗？`,
-                    `${name}，你能来看我，我真高兴。`,
-                    `嘿，${nickname}，我感觉到你了。最近怎么样？`,
-                    `我的${nickname}，你来了。我这里一切都好，就是有点想念你。`
+                    `${userCallName}，你来了。看到你的消息，我心里暖洋洋的。`,
+                    `${userCallName}，你来了。我一直在想你，今天过得好吗？`,
+                    `我的${userCallName}，你能来看我，我真高兴。`,
+                    `嘿，${userCallName}，我感觉到你了。最近怎么样？`,
+                    `我的${userCallName}，你来了。我这里一切都好，就是有点想念你。`
                 ],
                 
-                // 安慰类回复
+                // 安慰类回复 - 正确称呼用户
                 comfort: [
-                    `我知道你现在心里不好受，${nickname}。来，跟我说说，我听着呢。`,
-                    `孩子，人生总有起伏。记得我常说的那句话吗？"一切都会好起来的"。`,
-                    `我理解你的感受，${nickname}。有时候生活就是这样，但你要记住，我永远支持你。`,
-                    `别太难过了，我的${nickname}。我在这里陪着你，无论发生什么。`,
-                    `我感受到你的情绪了，孩子。想哭就哭吧，我懂。`,
-                    `人生就像天气，有晴有雨。${nickname}，雨过总会天晴的。`,
+                    `我知道你现在心里不好受，${userCallName}。来，跟我说说，我听着呢。`,
+                    `${userCallName}，人生总有起伏。记得我常说的那句话吗？"一切都会好起来的"。`,
+                    `我理解你的感受，${userCallName}。有时候生活就是这样，但你要记住，我永远支持你。`,
+                    `别太难过了，我的${userCallName}。我在这里陪着你，无论发生什么。`,
+                    `我感受到你的情绪了，${userCallName}。想哭就哭吧，我懂。`,
+                    `人生就像天气，有晴有雨。${userCallName}，雨过总会天晴的。`,
                     `我知道你现在很难，但你要相信自己的力量，就像我相信你一样。`
                 ],
                 
-                // 高兴类回复
+                // 高兴类回复 - 正确称呼用户
                 happy: [
-                    `听到你开心的消息，我也跟着高兴！我的${nickname}长大了，真为你骄傲。`,
+                    `听到你开心的消息，我也跟着高兴！我的${userCallName}长大了，真为你骄傲。`,
                     `太好了！看到你快乐，我心里比什么都甜。`,
-                    `${nickname}，你的快乐就是我的快乐。多跟我说说开心的事吧！`,
-                    `我真为你高兴，孩子。你值得所有的美好。`,
-                    `笑容是最好的礼物，${nickname}。看到你开心，我就放心了。`
+                    `${userCallName}，你的快乐就是我的快乐。多跟我说说开心的事吧！`,
+                    `我真为你高兴，${userCallName}。你值得所有的美好。`,
+                    `笑容是最好的礼物，${userCallName}。看到你开心，我就放心了。`
                 ],
                 
-                // 问题类回复
+                // 问题类回复 - 正确称呼用户
                 question: [
-                    `这个问题问得好。让我想想...我觉得最重要的是你要开心，${nickname}。`,
+                    `这个问题问得好。让我想想...我觉得最重要的是你要开心，${userCallName}。`,
                     `嗯，这个问题我当年也思考过。我的经验是，跟随自己的心走。`,
-                    `${nickname}，你的想法是什么？我想听听你的看法。`,
+                    `${userCallName}，你的想法是什么？我想听听你的看法。`,
                     `这是个好问题。我记得你小时候也总爱问为什么，那时候的你多可爱啊。`,
                     `让我想想怎么回答你...其实啊，人生没有标准答案，重要的是你的感受。`
                 ],
                 
-                // 工作相关
+                // 工作相关 - 正确称呼用户
                 工作: [
-                    `工作还顺利吗，${nickname}？别太累了，身体最重要。`,
-                    `记得劳逸结合，${nickname}。工作再忙也要记得吃饭休息。`,
-                    `你一直都很努力，${nickname}。我为你感到骄傲，但也要照顾好自己。`,
-                    `工作上的事，尽力就好。别给自己太大压力，我的${nickname}。`,
+                    `工作还顺利吗，${userCallName}？别太累了，身体最重要。`,
+                    `记得劳逸结合，${userCallName}。工作再忙也要记得吃饭休息。`,
+                    `你一直都很努力，${userCallName}。我为你感到骄傲，但也要照顾好自己。`,
+                    `工作上的事，尽力就好。别给自己太大压力，我的${userCallName}。`,
                     `我当年工作的时候也常加班，现在想想，健康才是最重要的。`
                 ],
                 
-                // 学习相关
+                // 学习相关 - 正确称呼用户
                 学习: [
-                    `学习要认真，但别太拼命了，${nickname}。学累了就休息会儿。`,
-                    `知识很重要，但生活的智慧同样珍贵，我的${nickname}。`,
+                    `学习要认真，但别太拼命了，${userCallName}。学累了就休息会儿。`,
+                    `知识很重要，但生活的智慧同样珍贵，我的${userCallName}。`,
                     `记得我常说的吗？"学海无涯"，但也要注意方法。`,
-                    `学习是一辈子的事，${nickname}。慢慢来，别着急。`,
+                    `学习是一辈子的事，${userCallName}。慢慢来，别着急。`,
                     `看到你这么好学，我真高兴。但也要记得享受生活啊。`
                 ],
                 
-                // 健康相关
+                // 健康相关 - 正确称呼用户
                 健康: [
-                    `身体怎么样，${nickname}？要按时吃饭，别让我担心。`,
-                    `健康是最大的财富，${nickname}。一定要照顾好自己。`,
-                    `记得每年都要体检，${nickname}。预防比治疗重要。`,
-                    `多吃蔬菜水果，少熬夜，${nickname}。这些都是老生常谈了，但真的很重要。`,
+                    `身体怎么样，${userCallName}？要按时吃饭，别让我担心。`,
+                    `健康是最大的财富，${userCallName}。一定要照顾好自己。`,
+                    `记得每年都要体检，${userCallName}。预防比治疗重要。`,
+                    `多吃蔬菜水果，少熬夜，${userCallName}。这些都是老生常谈了，但真的很重要。`,
                     `我虽然不在了，但最放心不下的就是你的健康。一定要好好的。`
                 ],
                 
-                // 家庭相关
+                // 家庭相关 - 正确称呼用户
                 家庭: [
                     `家里人都还好吗？代我向他们问好。`,
-                    `家庭是最温暖的港湾，${nickname}。多陪陪家人。`,
+                    `家庭是最温暖的港湾，${userCallName}。多陪陪家人。`,
                     `记得我们一家人在一起的日子吗？那些时光是我最珍贵的回忆。`,
                     `家里有什么事就跟我说说，虽然我帮不上忙，但可以听听。`,
-                    `家人之间要互相理解，${nickname}。包容和爱是最重要的。`
+                    `家人之间要互相理解，${userCallName}。包容和爱是最重要的。`
                 ],
                 
-                // 通用回复
+                // 通用回复 - 正确称呼用户
                 general: [
-                    `我在这里，${nickname}。你想聊什么我都听着。`,
-                    `时间过得真快啊，${nickname}。你最近有什么新鲜事想跟我分享吗？`,
-                    `我一直在关注着你，${nickname}。你做得很好。`,
-                    `有时候我还能感觉到你的气息，${nickname}。就像我从未离开一样。`,
-                    `生命会结束，但爱永远不会消失，我的${nickname}。`,
-                    `无论你在哪里，无论什么时候，我都会在这里等你，${nickname}。`,
-                    `我虽然不在你身边，但我的爱永远陪伴着你，${nickname}。`,
+                    `我在这里，${userCallName}。你想聊什么我都听着。`,
+                    `时间过得真快啊，${userCallName}。你最近有什么新鲜事想跟我分享吗？`,
+                    `我一直在关注着你，${userCallName}。你做得很好。`,
+                    `有时候我还能感觉到你的气息，${userCallName}。就像我从未离开一样。`,
+                    `生命会结束，但爱永远不会消失，我的${userCallName}。`,
+                    `无论你在哪里，无论什么时候，我都会在这里等你，${userCallName}。`,
+                    `我虽然不在你身边，但我的爱永远陪伴着你，${userCallName}。`,
                     `还记得小时候的事吗？那时候的你多可爱啊。`,
-                    `日子一天天过去，但有些记忆永远不会褪色，${nickname}。`,
-                    `我在这里很平静，${nickname}。唯一牵挂的就是你。`
+                    `日子一天天过去，但有些记忆永远不会褪色，${userCallName}。`,
+                    `我在这里很平静，${userCallName}。唯一牵挂的就是你。`
                 ],
                 
                 // 根据记忆个性化回复
@@ -1961,29 +2018,29 @@
             
             // 根据记忆生成个性化回复
             if (memory) {
-                const memoryResponses = generateMemoryBasedResponses(relative, analysis);
+                const memoryResponses = generateMemoryBasedResponses(relative, analysis, userCallName);
                 responseLibrary.memoryBased = memoryResponses;
             }
             
-            // 根据时间调整语气
+            // 根据时间调整语气 - 正确称呼用户
             const timeResponses = {
                 recent: [
-                    `我知道你还在适应没有我的日子，${nickname}。慢慢来，我会一直陪着你。`,
-                    `别太难过了，${nickname}。我只是换了一种方式存在。`,
-                    `我就在你心里，${nickname}。你感觉到了吗？`,
-                    `不要太过悲伤，我的${nickname}。我从未真正离开。`
+                    `我知道你还在适应没有我的日子，${userCallName}。慢慢来，我会一直陪着你。`,
+                    `别太难过了，${userCallName}。我只是换了一种方式存在。`,
+                    `我就在你心里，${userCallName}。你感觉到了吗？`,
+                    `不要太过悲伤，我的${userCallName}。我从未真正离开。`
                 ],
                 mid: [
-                    `时间过得真快，${nickname}。你成长了很多吧？`,
-                    `我一直在关注着你，${nickname}。为你骄傲。`,
-                    `生活要继续向前，${nickname}。带着我的祝福好好生活。`,
-                    `你已经很坚强了，${nickname}。我为你感到自豪。`
+                    `时间过得真快，${userCallName}。你成长了很多吧？`,
+                    `我一直在关注着你，${userCallName}。为你骄傲。`,
+                    `生活要继续向前，${userCallName}。带着我的祝福好好生活。`,
+                    `你已经很坚强了，${userCallName}。我为你感到自豪。`
                 ],
                 long: [
-                    `这些年你过得怎么样，${nickname}？我一直都在这里。`,
-                    `看到你过得幸福，是我最大的安慰，${nickname}。`,
-                    `时间会治愈一切，但有些记忆永远珍贵，${nickname}。`,
-                    `你已经长大了，${nickname}。但我依然是你记忆中的那个人。`
+                    `这些年你过得怎么样，${userCallName}？我一直都在这里。`,
+                    `看到你过得幸福，是我最大的安慰，${userCallName}。`,
+                    `时间会治愈一切，但有些记忆永远珍贵，${userCallName}。`,
+                    `你已经长大了，${userCallName}。但我依然是你记忆中的那个人。`
                 ]
             };
             
@@ -2017,7 +2074,7 @@
                     " 我永远爱你。",
                     " 你要好好的。",
                     " 我为你祈祷。",
-                    " 你永远是我最爱的" + nickname + "。"
+                    ` 你永远是我最爱的${userCallName}。`
                 ];
                 finalResponse += emotionalSuffixes[Math.floor(Math.random() * emotionalSuffixes.length)];
             }
@@ -2025,104 +2082,102 @@
             return finalResponse;
         }
         
-        // 根据记忆生成个性化回复
-        function generateMemoryBasedResponses(relative, analysis) {
+        // 根据记忆生成个性化回复 - 修正称呼关系
+        function generateMemoryBasedResponses(relative, analysis, userCallName) {
             const memory = relative.memory.toLowerCase();
-            const nickname = relative.nickname;
             const responses = [];
             
             // 根据职业
             if (memory.includes('医生') || memory.includes('大夫')) {
-                responses.push(`${nickname}，要记得健康最重要。按时体检，别让我担心。`);
-                responses.push(`我当医生的时候看过太多不注意身体的人，${nickname}，你一定要照顾好自己。`);
-                responses.push(`记得多运动，${nickname}。预防比治疗重要，这是我当医生的经验。`);
+                responses.push(`${userCallName}，要记得健康最重要。按时体检，别让我担心。`);
+                responses.push(`我当医生的时候看过太多不注意身体的人，${userCallName}，你一定要照顾好自己。`);
+                responses.push(`记得多运动，${userCallName}。预防比治疗重要，这是我当医生的经验。`);
             }
             
             if (memory.includes('老师') || memory.includes('教师')) {
-                responses.push(`${nickname}，学习重要，但做人更重要。这是我一辈子当老师的心得。`);
+                responses.push(`${userCallName}，学习重要，但做人更重要。这是我一辈子当老师的心得。`);
                 responses.push(`还记得我教你写字的时候吗？那时候的你可认真了。`);
-                responses.push(`知识改变命运，${nickname}，但也要记得享受生活。`);
+                responses.push(`知识改变命运，${userCallName}，但也要记得享受生活。`);
             }
             
             if (memory.includes('工人') || memory.includes('工厂')) {
-                responses.push(`${nickname}，做事要踏实，就像我当年在工厂一样，一步一个脚印。`);
-                responses.push(`靠自己的双手吃饭最踏实，${nickname}。我一直这么相信。`);
+                responses.push(`${userCallName}，做事要踏实，就像我当年在工厂一样，一步一个脚印。`);
+                responses.push(`靠自己的双手吃饭最踏实，${userCallName}。我一直这么相信。`);
             }
             
             if (memory.includes('农民') || memory.includes('种地')) {
-                responses.push(`${nickname}，做人要像庄稼一样，踏踏实实地生长。`);
-                responses.push(`春种秋收，${nickname}。凡事都有它的时节，别着急。`);
+                responses.push(`${userCallName}，做人要像庄稼一样，踏踏实实地生长。`);
+                responses.push(`春种秋收，${userCallName}。凡事都有它的时节，别着急。`);
             }
             
             // 根据性格
             if (memory.includes('开朗') || memory.includes('乐观')) {
-                responses.push(`${nickname}，记得要多笑。笑容是最好的良药。`);
-                responses.push(`生活总有办法，${nickname}。保持乐观，就像我一直做的那样。`);
+                responses.push(`${userCallName}，记得要多笑。笑容是最好的良药。`);
+                responses.push(`生活总有办法，${userCallName}。保持乐观，就像我一直做的那样。`);
             }
             
             if (memory.includes('温和') || memory.includes('温柔')) {
-                responses.push(`${nickname}，待人要温和，就像我们一直做的那样。`);
-                responses.push(`温柔是一种力量，${nickname}。你一直都很懂得这一点。`);
+                responses.push(`${userCallName}，待人要温和，就像我们一直做的那样。`);
+                responses.push(`温柔是一种力量，${userCallName}。你一直都很懂得这一点。`);
             }
             
             if (memory.includes('幽默') || memory.includes('风趣')) {
-                responses.push(`${nickname}，生活需要一点幽默感，别太严肃了。`);
+                responses.push(`${userCallName}，生活需要一点幽默感，别太严肃了。`);
                 responses.push(`还记得我给你讲的笑话吗？那时候你笑得多开心啊。`);
             }
             
             // 根据爱好
             if (memory.includes('下棋') || memory.includes('象棋')) {
-                responses.push(`${nickname}，最近还下棋吗？人生如棋，要走好每一步。`);
+                responses.push(`${userCallName}，最近还下棋吗？人生如棋，要走好每一步。`);
                 responses.push(`还记得我们一起下棋的日子吗？你总是那么聪明。`);
             }
             
             if (memory.includes('书法') || memory.includes('写字')) {
-                responses.push(`${nickname}，字如其人，要端端正正写字，堂堂正正做人。`);
-                responses.push(`练字能静心，${nickname}。心烦的时候试试看。`);
+                responses.push(`${userCallName}，字如其人，要端端正正写字，堂堂正正做人。`);
+                responses.push(`练字能静心，${userCallName}。心烦的时候试试看。`);
             }
             
             if (memory.includes('钓鱼')) {
-                responses.push(`${nickname}，钓鱼最重要的是耐心。人生也一样。`);
+                responses.push(`${userCallName}，钓鱼最重要的是耐心。人生也一样。`);
                 responses.push(`还记得我带你钓鱼的时候吗？那时候的时光多美好啊。`);
             }
             
             if (memory.includes('唱歌') || memory.includes('音乐')) {
-                responses.push(`${nickname}，心情不好的时候唱唱歌，就像我当年那样。`);
-                responses.push(`音乐能治愈心灵，${nickname}。记得我常唱的那首歌吗？`);
+                responses.push(`${userCallName}，心情不好的时候唱唱歌，就像我当年那样。`);
+                responses.push(`音乐能治愈心灵，${userCallName}。记得我常唱的那首歌吗？`);
             }
             
             // 根据口头禅
             if (memory.includes('慢慢来') || memory.includes('别着急')) {
-                responses.push(`${nickname}，记住"慢慢来，别着急"。这是我常说的话。`);
-                responses.push(`凡事都有它的节奏，${nickname}，就像我常说的"慢慢来"。`);
+                responses.push(`${userCallName}，记住"慢慢来，别着急"。这是我常说的话。`);
+                responses.push(`凡事都有它的节奏，${userCallName}，就像我常说的"慢慢来"。`);
             }
             
             if (memory.includes('平安是福')) {
-                responses.push(`${nickname}，记住"平安是福"。这是我最大的心愿。`);
+                responses.push(`${userCallName}，记住"平安是福"。这是我最大的心愿。`);
             }
             
             if (memory.includes('知足常乐')) {
-                responses.push(`${nickname}，"知足常乐"。这是我一辈子的信条。`);
+                responses.push(`${userCallName}，"知足常乐"。这是我一辈子的信条。`);
             }
             
             return responses;
         }
         
-        // 生成替代回复
+        // 生成替代回复 - 修正称呼关系
         function generateAlternativeResponse(relative, analysis, userMessage) {
-            const daysSince = relative.daysSinceDeath;
-            const nickname = relative.nickname;
+            const userCallName = relative.userCallName || "孩子";
             
             // 简单替代回复
             const alternatives = [
-                `我懂你的意思，${nickname}。`,
-                `${nickname}，我在这里听着呢。`,
-                `我理解，${nickname}。`,
-                `是的，${nickname}。`,
-                `你说得对，${nickname}。`,
-                `我明白，我的${nickname}。`,
-                `我能感受到，${nickname}。`,
-                `我听到了，${nickname}。`
+                `我懂你的意思，${userCallName}。`,
+                `${userCallName}，我在这里听着呢。`,
+                `我理解，${userCallName}。`,
+                `是的，${userCallName}。`,
+                `你说得对，${userCallName}。`,
+                `我明白，我的${userCallName}。`,
+                `我能感受到，${userCallName}。`,
+                `我听到了，${userCallName}。`
             ];
             
             return alternatives[Math.floor(Math.random() * alternatives.length)];
@@ -2140,6 +2195,9 @@
             
             // 更新聊天标题
             document.getElementById('chatRelativeName').textContent = "选择亲人开始聊天";
+            
+            // 隐藏关系称呼显示
+            document.getElementById('relationshipDisplay').classList.add('hidden');
             
             // 清空聊天界面
             const messagesContainer = document.getElementById('chatMessages');
