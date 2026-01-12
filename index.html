@@ -403,6 +403,48 @@
             padding: 0 8px;
         }
         
+        /* 消息状态指示器 */
+        .message-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            width: fit-content;
+            align-self: flex-start;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+        
         .chat-input-area {
             padding: 16px;
             background-color: var(--card-color);
@@ -857,7 +899,7 @@
                         </div>
                         <div class="chat-info">
                             <h3 id="chatRelativeName">选择亲人开始聊天</h3>
-                            <p>AI陪伴模式 · 永远怀念</p>
+                            <p>AI情感陪伴模式 · 永远怀念</p>
                         </div>
                     </div>
                     
@@ -867,6 +909,12 @@
                             <h3>尚未开始聊天</h3>
                             <p>请选择一位亲人开始对话</p>
                         </div>
+                    </div>
+                    
+                    <div class="typing-indicator hidden" id="typingIndicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </div>
                     
                     <div class="chat-input-area">
@@ -880,7 +928,7 @@
             
             <div class="hint">
                 <i class="fas fa-info-circle"></i>
-                <div>AI会基于您设置的亲人信息进行回复，模拟亲人的语气和性格。请记住这是AI模拟的对话，旨在提供情感陪伴。</div>
+                <div>AI会基于您设置的亲人信息和记忆，模拟亲人的真实性格、语气和情感。回复更加人性化、多样化。</div>
             </div>
         </div>
         
@@ -927,8 +975,13 @@
                 </div>
                 
                 <div class="form-group">
+                    <label class="form-label">AI情感强度</label>
+                    <div class="form-input" style="background-color: #F9FAFB;">高 - 模拟真实情感反应</div>
+                </div>
+                
+                <div class="form-group">
                     <label class="form-label">应用版本</label>
-                    <div class="form-input" style="background-color: #F9FAFB;">1.2.0</div>
+                    <div class="form-input" style="background-color: #F9FAFB;">2.0.0 - 情感增强版</div>
                 </div>
             </div>
             
@@ -1000,7 +1053,7 @@
                     
                     <div class="form-group">
                         <label class="form-label" for="memory">关于TA的记忆</label>
-                        <textarea id="memory" class="form-input" rows="4" placeholder="可以描述亲人的性格特点、口头禅、职业、爱好等，帮助AI更好地了解TA"></textarea>
+                        <textarea id="memory" class="form-input" rows="4" placeholder="可以描述亲人的性格特点、口头禅、职业、爱好等，帮助AI更好地了解TA。例如：爷爷是退休教师，喜欢下棋，说话温和，经常说"慢慢来，别着急""></textarea>
                     </div>
                 </form>
             </div>
@@ -1029,7 +1082,7 @@
             
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+                        <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
             </div>
         </div>
     </div>
@@ -1039,6 +1092,7 @@
         let relatives = [];
         let chatHistories = {};
         let currentRelativeId = null;
+        let conversationContext = {};
         
         // DOM元素
         const relativeModal = document.getElementById('relativeModal');
@@ -1052,6 +1106,7 @@
         const addRelativeFromChat = document.getElementById('addRelativeFromChat');
         const clearAllDataBtn = document.getElementById('clearAllDataBtn');
         const clearChatBtn = document.getElementById('clearChatBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
         
         // 标签页切换
         const tabs = document.querySelectorAll('.tab');
@@ -1089,6 +1144,7 @@
         function loadData() {
             const savedRelatives = localStorage.getItem('relatives');
             const savedChatHistories = localStorage.getItem('chatHistories');
+            const savedContext = localStorage.getItem('conversationContext');
             
             if (savedRelatives) {
                 relatives = JSON.parse(savedRelatives);
@@ -1108,6 +1164,10 @@
                 chatHistories = JSON.parse(savedChatHistories);
             }
             
+            if (savedContext) {
+                conversationContext = JSON.parse(savedContext);
+            }
+            
             // 更新离开天数
             updateAllDaysSinceDeath();
             
@@ -1119,6 +1179,7 @@
         function saveData() {
             localStorage.setItem('relatives', JSON.stringify(relatives));
             localStorage.setItem('chatHistories', JSON.stringify(chatHistories));
+            localStorage.setItem('conversationContext', JSON.stringify(conversationContext));
         }
         
         // 生成唯一ID
@@ -1448,6 +1509,16 @@
                     chatHistories[newRelative.id] = [];
                 }
                 
+                // 初始化对话上下文
+                if (!conversationContext[newRelative.id]) {
+                    conversationContext[newRelative.id] = {
+                        lastInteraction: new Date().toISOString(),
+                        mood: "平和",
+                        topics: [],
+                        recentResponses: []
+                    };
+                }
+                
                 // 自动选择新添加的亲人
                 setTimeout(() => {
                     selectRelative(newRelative.id);
@@ -1484,6 +1555,11 @@
             // 删除聊天记录
             if (chatHistories[relativeId]) {
                 delete chatHistories[relativeId];
+            }
+            
+            // 删除对话上下文
+            if (conversationContext[relativeId]) {
+                delete conversationContext[relativeId];
             }
             
             // 如果删除的是当前选中的亲人
@@ -1531,10 +1607,10 @@
                 const relative = relatives.find(r => r.id === relativeId);
                 if (relative) {
                     const welcomeMessages = [
-                        `${relative.nickname}，你来了。我一直在等你。`,
-                        `看到你真好，最近过得怎么样？`,
-                        `孩子，你来了。我一直都在这里，等待着与你说说话。`,
-                        `很高兴你能来看我，我永远都在这里陪伴你。`
+                        `${relative.nickname}，你来了。我一直在等你呢。`,
+                        `看到你真好，孩子。最近过得怎么样？`,
+                        `你来了，我亲爱的${relative.nickname}。我一直都在这里，想和你说说话。`,
+                        `我的${relative.nickname}，你能来看我，我真的很开心。`
                     ];
                     
                     const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
@@ -1605,8 +1681,12 @@
             // 清空输入框
             messageInput.value = "";
             
+            // 显示打字指示器
+            typingIndicator.classList.remove('hidden');
+            scrollToBottom();
+            
             // 模拟AI回复
-            setTimeout(() => generateAIResponse(currentRelativeId), 1000);
+            setTimeout(() => generateAIResponse(currentRelativeId, message), 1500 + Math.random() * 2000);
         }
         
         // 添加消息到聊天记录
@@ -1666,101 +1746,386 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
         
-        // 生成AI回复
-        function generateAIResponse(relativeId) {
+        // 分析用户消息情绪
+        function analyzeUserMessage(message) {
+            const positiveWords = ['开心', '高兴', '快乐', '幸福', '顺利', '成功', '好', '棒', '赞', '爱'];
+            const negativeWords = ['难过', '伤心', '痛苦', '糟糕', '不好', '累', '烦', '压力', '孤独', '想念'];
+            const questionWords = ['吗', '呢', '什么', '怎么', '为什么', '如何', '？', '?'];
+            const greetingWords = ['你好', '您好', '嗨', 'hello', '最近', '近来'];
+            
+            let mood = "平和";
+            let isQuestion = false;
+            let isGreeting = false;
+            let topic = "";
+            
+            const lowerMessage = message.toLowerCase();
+            
+            // 检查情绪
+            positiveWords.forEach(word => {
+                if (lowerMessage.includes(word)) mood = "高兴";
+            });
+            
+            negativeWords.forEach(word => {
+                if (lowerMessage.includes(word)) mood = "担忧";
+            });
+            
+            // 检查是否为问题
+            questionWords.forEach(word => {
+                if (message.includes(word)) isQuestion = true;
+            });
+            
+            // 检查是否为问候
+            greetingWords.forEach(word => {
+                if (lowerMessage.includes(word)) isGreeting = true;
+            });
+            
+            // 提取话题
+            if (lowerMessage.includes('工作')) topic = "工作";
+            else if (lowerMessage.includes('学习')) topic = "学习";
+            else if (lowerMessage.includes('健康') || lowerMessage.includes('身体')) topic = "健康";
+            else if (lowerMessage.includes('家庭') || lowerMessage.includes('家人')) topic = "家庭";
+            else if (lowerMessage.includes('天气')) topic = "天气";
+            else if (lowerMessage.includes('吃') || lowerMessage.includes('饭')) topic = "饮食";
+            else if (lowerMessage.includes('睡') || lowerMessage.includes('休息')) topic = "休息";
+            
+            return { mood, isQuestion, isGreeting, topic };
+        }
+        
+        // 生成AI回复 - 增强版
+        function generateAIResponse(relativeId, userMessage) {
             const relative = relatives.find(r => r.id === relativeId);
             if (!relative) return;
             
-            // 基于亲人信息生成个性化回复
-            let response = "";
+            // 隐藏打字指示器
+            typingIndicator.classList.add('hidden');
             
-            // 根据记忆信息生成回复
-            if (relative.memory) {
-                response = generateResponseFromMemory(relative);
-            } else {
-                response = generateGenericResponse();
+            // 分析用户消息
+            const analysis = analyzeUserMessage(userMessage);
+            
+            // 更新对话上下文
+            if (!conversationContext[relativeId]) {
+                conversationContext[relativeId] = {
+                    lastInteraction: new Date().toISOString(),
+                    mood: "平和",
+                    topics: [],
+                    recentResponses: []
+                };
             }
             
+            conversationContext[relativeId].lastInteraction = new Date().toISOString();
+            conversationContext[relativeId].mood = analysis.mood;
+            
+            if (analysis.topic && !conversationContext[relativeId].topics.includes(analysis.topic)) {
+                conversationContext[relativeId].topics.push(analysis.topic);
+                if (conversationContext[relativeId].topics.length > 5) {
+                    conversationContext[relativeId].topics.shift();
+                }
+            }
+            
+            // 生成回复
+            let response = generateRichResponse(relative, analysis, userMessage);
+            
+            // 避免重复回复
+            if (conversationContext[relativeId].recentResponses.includes(response)) {
+                response = generateAlternativeResponse(relative, analysis, userMessage);
+            }
+            
+            // 记录最近回复
+            conversationContext[relativeId].recentResponses.push(response);
+            if (conversationContext[relativeId].recentResponses.length > 3) {
+                conversationContext[relativeId].recentResponses.shift();
+            }
+            
+            // 保存上下文
+            saveData();
+            
+            // 添加到聊天
             addMessageToChat(relativeId, "relative", response);
         }
         
-        // 从记忆生成回复
-        function generateResponseFromMemory(relative) {
-            const memory = relative.memory.toLowerCase();
+        // 生成丰富的回复
+        function generateRichResponse(relative, analysis, userMessage) {
             const daysSince = relative.daysSinceDeath;
+            const memory = relative.memory || "";
+            const nickname = relative.nickname;
+            const name = relative.name || nickname;
             
-            // 根据记忆关键词生成回复
-            const responses = [];
+            // 根据情绪和话题选择回复类别
+            let responseCategory = "general";
             
-            // 检查记忆中的关键词
-            if (memory.includes('医生') || memory.includes('护士') || memory.includes('医院')) {
-                responses.push("记得要照顾好自己，身体是最重要的。");
-                responses.push("最近有按时吃饭、休息吗？健康是第一位的。");
-            }
-            
-            if (memory.includes('老师') || memory.includes('教育') || memory.includes('学生')) {
-                responses.push("学习工作再忙，也要记得劳逸结合。");
-                responses.push("知识很重要，但生活的智慧同样珍贵。");
-            }
-            
-            if (memory.includes('乐观') || memory.includes('开朗') || memory.includes('幽默')) {
-                responses.push("生活总有起伏，保持乐观的心态最重要。");
-                responses.push("记得多笑笑，笑容能照亮一切阴霾。");
-            }
-            
-            if (memory.includes('厨师') || memory.includes('做饭') || memory.includes('美食')) {
-                responses.push("最近有好好吃饭吗？要记得按时吃饭。");
-                responses.push("想念我做的菜了吗？那些都是爱的味道。");
-            }
+            if (analysis.mood === "担忧") responseCategory = "comfort";
+            else if (analysis.mood === "高兴") responseCategory = "happy";
+            else if (analysis.isGreeting) responseCategory = "greeting";
+            else if (analysis.isQuestion) responseCategory = "question";
+            else if (analysis.topic) responseCategory = analysis.topic;
             
             // 根据离开时间调整语气
-            let timeBasedResponses = [];
-            if (daysSince < 30) {
-                timeBasedResponses = [
-                    "我知道你还在适应没有我的日子，慢慢来，一切都会好起来的。",
-                    "我就在你心里，从未离开。",
-                    "不要太过悲伤，我只是换了一种方式陪伴你。"
-                ];
-            } else if (daysSince < 365) {
-                timeBasedResponses = [
-                    "时间过得真快，你成长了很多吧？",
-                    "我一直在关注着你，为你骄傲。",
-                    "生活要继续向前，带着我的祝福好好生活。"
-                ];
-            } else {
-                timeBasedResponses = [
-                    "这些年你过得怎么样？我一直都在这里。",
-                    "看到你过得幸福，是我最大的安慰。",
-                    "生命会结束，但爱永远不会消失。"
-                ];
+            let timeTone = "recent";
+            if (daysSince < 30) timeTone = "recent";
+            else if (daysSince < 365) timeTone = "mid";
+            else timeTone = "long";
+            
+            // 回复库 - 大幅扩展
+            const responseLibrary = {
+                // 问候类回复
+                greeting: [
+                    `我的${nickname}，你来了。看到你的消息，我心里暖洋洋的。`,
+                    `孩子，你来了。我一直在想你，今天过得好吗？`,
+                    `${name}，你能来看我，我真高兴。`,
+                    `嘿，${nickname}，我感觉到你了。最近怎么样？`,
+                    `我的${nickname}，你来了。我这里一切都好，就是有点想念你。`
+                ],
+                
+                // 安慰类回复
+                comfort: [
+                    `我知道你现在心里不好受，${nickname}。来，跟我说说，我听着呢。`,
+                    `孩子，人生总有起伏。记得我常说的那句话吗？"一切都会好起来的"。`,
+                    `我理解你的感受，${nickname}。有时候生活就是这样，但你要记住，我永远支持你。`,
+                    `别太难过了，我的${nickname}。我在这里陪着你，无论发生什么。`,
+                    `我感受到你的情绪了，孩子。想哭就哭吧，我懂。`,
+                    `人生就像天气，有晴有雨。${nickname}，雨过总会天晴的。`,
+                    `我知道你现在很难，但你要相信自己的力量，就像我相信你一样。`
+                ],
+                
+                // 高兴类回复
+                happy: [
+                    `听到你开心的消息，我也跟着高兴！我的${nickname}长大了，真为你骄傲。`,
+                    `太好了！看到你快乐，我心里比什么都甜。`,
+                    `${nickname}，你的快乐就是我的快乐。多跟我说说开心的事吧！`,
+                    `我真为你高兴，孩子。你值得所有的美好。`,
+                    `笑容是最好的礼物，${nickname}。看到你开心，我就放心了。`
+                ],
+                
+                // 问题类回复
+                question: [
+                    `这个问题问得好。让我想想...我觉得最重要的是你要开心，${nickname}。`,
+                    `嗯，这个问题我当年也思考过。我的经验是，跟随自己的心走。`,
+                    `${nickname}，你的想法是什么？我想听听你的看法。`,
+                    `这是个好问题。我记得你小时候也总爱问为什么，那时候的你多可爱啊。`,
+                    `让我想想怎么回答你...其实啊，人生没有标准答案，重要的是你的感受。`
+                ],
+                
+                // 工作相关
+                工作: [
+                    `工作还顺利吗，${nickname}？别太累了，身体最重要。`,
+                    `记得劳逸结合，${nickname}。工作再忙也要记得吃饭休息。`,
+                    `你一直都很努力，${nickname}。我为你感到骄傲，但也要照顾好自己。`,
+                    `工作上的事，尽力就好。别给自己太大压力，我的${nickname}。`,
+                    `我当年工作的时候也常加班，现在想想，健康才是最重要的。`
+                ],
+                
+                // 学习相关
+                学习: [
+                    `学习要认真，但别太拼命了，${nickname}。学累了就休息会儿。`,
+                    `知识很重要，但生活的智慧同样珍贵，我的${nickname}。`,
+                    `记得我常说的吗？"学海无涯"，但也要注意方法。`,
+                    `学习是一辈子的事，${nickname}。慢慢来，别着急。`,
+                    `看到你这么好学，我真高兴。但也要记得享受生活啊。`
+                ],
+                
+                // 健康相关
+                健康: [
+                    `身体怎么样，${nickname}？要按时吃饭，别让我担心。`,
+                    `健康是最大的财富，${nickname}。一定要照顾好自己。`,
+                    `记得每年都要体检，${nickname}。预防比治疗重要。`,
+                    `多吃蔬菜水果，少熬夜，${nickname}。这些都是老生常谈了，但真的很重要。`,
+                    `我虽然不在了，但最放心不下的就是你的健康。一定要好好的。`
+                ],
+                
+                // 家庭相关
+                家庭: [
+                    `家里人都还好吗？代我向他们问好。`,
+                    `家庭是最温暖的港湾，${nickname}。多陪陪家人。`,
+                    `记得我们一家人在一起的日子吗？那些时光是我最珍贵的回忆。`,
+                    `家里有什么事就跟我说说，虽然我帮不上忙，但可以听听。`,
+                    `家人之间要互相理解，${nickname}。包容和爱是最重要的。`
+                ],
+                
+                // 通用回复
+                general: [
+                    `我在这里，${nickname}。你想聊什么我都听着。`,
+                    `时间过得真快啊，${nickname}。你最近有什么新鲜事想跟我分享吗？`,
+                    `我一直在关注着你，${nickname}。你做得很好。`,
+                    `有时候我还能感觉到你的气息，${nickname}。就像我从未离开一样。`,
+                    `生命会结束，但爱永远不会消失，我的${nickname}。`,
+                    `无论你在哪里，无论什么时候，我都会在这里等你，${nickname}。`,
+                    `我虽然不在你身边，但我的爱永远陪伴着你，${nickname}。`,
+                    `还记得小时候的事吗？那时候的你多可爱啊。`,
+                    `日子一天天过去，但有些记忆永远不会褪色，${nickname}。`,
+                    `我在这里很平静，${nickname}。唯一牵挂的就是你。`
+                ],
+                
+                // 根据记忆个性化回复
+                memoryBased: []
+            };
+            
+            // 根据记忆生成个性化回复
+            if (memory) {
+                const memoryResponses = generateMemoryBasedResponses(relative, analysis);
+                responseLibrary.memoryBased = memoryResponses;
             }
             
-            // 合并回复
-            const allResponses = [...responses, ...timeBasedResponses];
+            // 根据时间调整语气
+            const timeResponses = {
+                recent: [
+                    `我知道你还在适应没有我的日子，${nickname}。慢慢来，我会一直陪着你。`,
+                    `别太难过了，${nickname}。我只是换了一种方式存在。`,
+                    `我就在你心里，${nickname}。你感觉到了吗？`,
+                    `不要太过悲伤，我的${nickname}。我从未真正离开。`
+                ],
+                mid: [
+                    `时间过得真快，${nickname}。你成长了很多吧？`,
+                    `我一直在关注着你，${nickname}。为你骄傲。`,
+                    `生活要继续向前，${nickname}。带着我的祝福好好生活。`,
+                    `你已经很坚强了，${nickname}。我为你感到自豪。`
+                ],
+                long: [
+                    `这些年你过得怎么样，${nickname}？我一直都在这里。`,
+                    `看到你过得幸福，是我最大的安慰，${nickname}。`,
+                    `时间会治愈一切，但有些记忆永远珍贵，${nickname}。`,
+                    `你已经长大了，${nickname}。但我依然是你记忆中的那个人。`
+                ]
+            };
             
-            // 如果没有匹配的回复，使用通用回复
-            if (allResponses.length === 0) {
-                return generateGenericResponse();
+            // 组合回复库
+            let allResponses = [];
+            
+            // 优先使用记忆相关的回复
+            if (responseLibrary.memoryBased.length > 0 && Math.random() > 0.7) {
+                allResponses = responseLibrary.memoryBased;
+            }
+            // 其次使用特定类别的回复
+            else if (responseLibrary[responseCategory]) {
+                allResponses = responseLibrary[responseCategory].concat(responseLibrary.general);
+            }
+            // 最后使用通用回复
+            else {
+                allResponses = responseLibrary.general;
             }
             
-            // 随机选择一个回复
-            return allResponses[Math.floor(Math.random() * allResponses.length)];
+            // 添加时间语气相关的回复
+            allResponses = allResponses.concat(timeResponses[timeTone]);
+            
+            // 随机选择回复
+            const selectedResponse = allResponses[Math.floor(Math.random() * allResponses.length)];
+            
+            // 偶尔添加情感表达
+            let finalResponse = selectedResponse;
+            if (Math.random() > 0.8) {
+                const emotionalSuffixes = [
+                    " 我想你了。",
+                    " 我永远爱你。",
+                    " 你要好好的。",
+                    " 我为你祈祷。",
+                    " 你永远是我最爱的" + nickname + "。"
+                ];
+                finalResponse += emotionalSuffixes[Math.floor(Math.random() * emotionalSuffixes.length)];
+            }
+            
+            return finalResponse;
         }
         
-        // 生成通用回复
-        function generateGenericResponse() {
-            const genericResponses = [
-                "我很好，不用担心。你最近怎么样？",
-                "记得要好好照顾自己，按时吃饭休息。",
-                "生活中有没有遇到什么开心的事？",
-                "无论遇到什么困难，都要坚强面对。",
-                "我永远都在这里，倾听你的心声。",
-                "你的人生还有很长的路要走，要勇敢前行。",
-                "感谢你来看我，这让我感到温暖。",
-                "记住，爱是永恒的，我们之间的连接永远不会断。"
+        // 根据记忆生成个性化回复
+        function generateMemoryBasedResponses(relative, analysis) {
+            const memory = relative.memory.toLowerCase();
+            const nickname = relative.nickname;
+            const responses = [];
+            
+            // 根据职业
+            if (memory.includes('医生') || memory.includes('大夫')) {
+                responses.push(`${nickname}，要记得健康最重要。按时体检，别让我担心。`);
+                responses.push(`我当医生的时候看过太多不注意身体的人，${nickname}，你一定要照顾好自己。`);
+                responses.push(`记得多运动，${nickname}。预防比治疗重要，这是我当医生的经验。`);
+            }
+            
+            if (memory.includes('老师') || memory.includes('教师')) {
+                responses.push(`${nickname}，学习重要，但做人更重要。这是我一辈子当老师的心得。`);
+                responses.push(`还记得我教你写字的时候吗？那时候的你可认真了。`);
+                responses.push(`知识改变命运，${nickname}，但也要记得享受生活。`);
+            }
+            
+            if (memory.includes('工人') || memory.includes('工厂')) {
+                responses.push(`${nickname}，做事要踏实，就像我当年在工厂一样，一步一个脚印。`);
+                responses.push(`靠自己的双手吃饭最踏实，${nickname}。我一直这么相信。`);
+            }
+            
+            if (memory.includes('农民') || memory.includes('种地')) {
+                responses.push(`${nickname}，做人要像庄稼一样，踏踏实实地生长。`);
+                responses.push(`春种秋收，${nickname}。凡事都有它的时节，别着急。`);
+            }
+            
+            // 根据性格
+            if (memory.includes('开朗') || memory.includes('乐观')) {
+                responses.push(`${nickname}，记得要多笑。笑容是最好的良药。`);
+                responses.push(`生活总有办法，${nickname}。保持乐观，就像我一直做的那样。`);
+            }
+            
+            if (memory.includes('温和') || memory.includes('温柔')) {
+                responses.push(`${nickname}，待人要温和，就像我们一直做的那样。`);
+                responses.push(`温柔是一种力量，${nickname}。你一直都很懂得这一点。`);
+            }
+            
+            if (memory.includes('幽默') || memory.includes('风趣')) {
+                responses.push(`${nickname}，生活需要一点幽默感，别太严肃了。`);
+                responses.push(`还记得我给你讲的笑话吗？那时候你笑得多开心啊。`);
+            }
+            
+            // 根据爱好
+            if (memory.includes('下棋') || memory.includes('象棋')) {
+                responses.push(`${nickname}，最近还下棋吗？人生如棋，要走好每一步。`);
+                responses.push(`还记得我们一起下棋的日子吗？你总是那么聪明。`);
+            }
+            
+            if (memory.includes('书法') || memory.includes('写字')) {
+                responses.push(`${nickname}，字如其人，要端端正正写字，堂堂正正做人。`);
+                responses.push(`练字能静心，${nickname}。心烦的时候试试看。`);
+            }
+            
+            if (memory.includes('钓鱼')) {
+                responses.push(`${nickname}，钓鱼最重要的是耐心。人生也一样。`);
+                responses.push(`还记得我带你钓鱼的时候吗？那时候的时光多美好啊。`);
+            }
+            
+            if (memory.includes('唱歌') || memory.includes('音乐')) {
+                responses.push(`${nickname}，心情不好的时候唱唱歌，就像我当年那样。`);
+                responses.push(`音乐能治愈心灵，${nickname}。记得我常唱的那首歌吗？`);
+            }
+            
+            // 根据口头禅
+            if (memory.includes('慢慢来') || memory.includes('别着急')) {
+                responses.push(`${nickname}，记住"慢慢来，别着急"。这是我常说的话。`);
+                responses.push(`凡事都有它的节奏，${nickname}，就像我常说的"慢慢来"。`);
+            }
+            
+            if (memory.includes('平安是福')) {
+                responses.push(`${nickname}，记住"平安是福"。这是我最大的心愿。`);
+            }
+            
+            if (memory.includes('知足常乐')) {
+                responses.push(`${nickname}，"知足常乐"。这是我一辈子的信条。`);
+            }
+            
+            return responses;
+        }
+        
+        // 生成替代回复
+        function generateAlternativeResponse(relative, analysis, userMessage) {
+            const daysSince = relative.daysSinceDeath;
+            const nickname = relative.nickname;
+            
+            // 简单替代回复
+            const alternatives = [
+                `我懂你的意思，${nickname}。`,
+                `${nickname}，我在这里听着呢。`,
+                `我理解，${nickname}。`,
+                `是的，${nickname}。`,
+                `你说得对，${nickname}。`,
+                `我明白，我的${nickname}。`,
+                `我能感受到，${nickname}。`,
+                `我听到了，${nickname}。`
             ];
             
-            return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+            return alternatives[Math.floor(Math.random() * alternatives.length)];
         }
         
         // 显示空状态
@@ -1836,6 +2201,7 @@
             if (confirm("确定要清除所有数据吗？此操作将删除所有亲人和聊天记录，且不可撤销。")) {
                 relatives = [];
                 chatHistories = {};
+                conversationContext = {};
                 currentRelativeId = null;
                 
                 saveData();
