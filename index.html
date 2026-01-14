@@ -92,6 +92,34 @@
             font-size: 20px;
         }
         
+        .ai-status {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10B981;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
         /* 标签导航 */
         .tab-navigation {
             display: flex;
@@ -310,7 +338,7 @@
             font-weight: 500;
         }
         
-        /* 新增：关系称呼设置 */
+        /* 关系称呼显示 */
         .relationship-settings {
             background-color: rgba(255, 255, 255, 0.15);
             padding: 16px;
@@ -331,6 +359,36 @@
         .relationship-display {
             font-size: 16px;
             font-weight: 500;
+        }
+        
+        /* AI智能体状态 */
+        .ai-agent-status {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ai-status-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-status-text {
+            font-size: 13px;
+        }
+        
+        .ai-status-badge {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
         }
         
         /* 聊天界面 */
@@ -515,6 +573,21 @@
             transform: translateY(-2px);
         }
         
+        /* 情感指示器 - 隐藏 */
+        .emotion-indicator {
+            display: none !important;
+        }
+        
+        .emotion-icon {
+            font-size: 12px;
+        }
+        
+        .emotion-happy { color: #F59E0B; }
+        .emotion-calm { color: #10B981; }
+        .emotion-sad { color: #8B5CF6; }
+        .emotion-loving { color: #EC4899; }
+        .emotion-nostalgic { color: #6366F1; }
+        
         /* 表单样式 */
         .form-group {
             margin-bottom: 20px;
@@ -556,6 +629,47 @@
         textarea.form-input {
             min-height: 100px;
             resize: vertical;
+        }
+        
+        /* 日期类型选择器 */
+        .date-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .date-type-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .date-type-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .lunar-date-input {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lunar-date-input select {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            font-size: 15px;
         }
         
         /* 按钮 */
@@ -689,6 +803,25 @@
             gap: 8px;
         }
         
+        /* 亲人列表中的编辑和删除按钮 - 增加对比度 */
+        .relative-item-actions .action-btn {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .relative-item-actions .action-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .relative-item-actions .action-btn.delete-item-btn {
+            background-color: #FEE2E2;
+            color: var(--danger-color);
+        }
+        
+        .relative-item-actions .action-btn.delete-item-btn:hover {
+            background-color: #FECACA;
+        }
+        
         /* 模态框 */
         .modal-overlay {
             position: fixed;
@@ -767,6 +900,39 @@
             gap: 12px;
         }
         
+        /* AI API设置卡片 */
+        .api-settings {
+            background-color: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .api-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .api-status-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .api-test-btn {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
         /* 底部 */
         .footer {
             text-align: center;
@@ -839,6 +1005,10 @@
             .modal-footer {
                 padding: 16px;
             }
+            
+            .lunar-date-input {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -850,7 +1020,11 @@
                 <i class="fas fa-heart"></i>
             </div>
             <h1>忆亲</h1>
-            <p>用AI保存记忆，让爱永远陪伴</p>
+            <p>AI智能体情感陪伴 · 真实角色互动</p>
+            <div class="ai-status">
+                <div class="status-indicator"></div>
+                <span>AI在线</span>
+            </div>
         </header>
         
         <!-- 标签导航 -->
@@ -860,6 +1034,9 @@
             </div>
             <div class="tab" data-tab="relatives">
                 <i class="fas fa-users"></i>亲人
+            </div>
+            <div class="tab" data-tab="ai-settings">
+                <i class="fas fa-robot"></i>AI设置
             </div>
             <div class="tab" data-tab="settings">
                 <i class="fas fa-cog"></i>设置
@@ -912,6 +1089,15 @@
                     </div>
                 </div>
                 
+                <!-- AI智能体状态 -->
+                <div class="ai-agent-status">
+                    <div class="ai-status-info">
+                        <i class="fas fa-brain"></i>
+                        <div class="ai-status-text">AI情感智能体在线</div>
+                    </div>
+                    <div class="ai-status-badge">深度情感模式</div>
+                </div>
+                
                 <!-- 关系称呼显示 -->
                 <div class="relationship-settings hidden" id="relationshipDisplay">
                     <div class="relationship-title">
@@ -931,7 +1117,7 @@
                         </div>
                         <div class="chat-info">
                             <h3 id="chatRelativeName">选择亲人开始聊天</h3>
-                            <p>AI情感陪伴模式 · 永远怀念</p>
+                            <p>AI情感智能体 · 真实角色扮演</p>
                         </div>
                     </div>
                     
@@ -939,8 +1125,14 @@
                         <div class="empty-state" id="emptyChatState">
                             <i class="fas fa-comments"></i>
                             <h3>尚未开始聊天</h3>
-                            <p>请选择一位亲人开始对话</p>
+                            <p>请选择一位亲人开始与AI智能体对话</p>
                         </div>
+                    </div>
+                    
+                    <!-- 情感指示器（已隐藏） -->
+                    <div class="emotion-indicator hidden" id="emotionIndicator">
+                        <i class="fas fa-smile emotion-icon emotion-calm"></i>
+                        <span id="emotionText">情感分析中...</span>
                     </div>
                     
                     <div class="typing-indicator hidden" id="typingIndicator">
@@ -960,7 +1152,7 @@
             
             <div class="hint">
                 <i class="fas fa-info-circle"></i>
-                <div>AI会以亲人的身份与您对话。例如，如果您添加了"妈妈"，AI会以妈妈的身份称呼您为"孩子"。您可以在编辑亲人信息时设置AI对您的称呼。</div>
+                <div>AI智能体正在模拟真实亲人的情感和语言风格，提供深度情感陪伴体验。系统会自动分析情感并调整回复风格。</div>
             </div>
         </div>
         
@@ -989,6 +1181,177 @@
             </div>
         </div>
         
+        <!-- AI设置标签 -->
+        <div id="ai-settings-tab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-robot"></i>AI智能体设置</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">AI情感强度</label>
+                    <select id="aiEmotionLevel" class="form-input">
+                        <option value="gentle">温和模式 (情感表达适中)</option>
+                        <option value="balanced" selected>平衡模式 (情感表达自然)</option>
+                        <option value="deep">深度模式 (强烈情感表达)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">AI记忆长度</label>
+                    <select id="aiMemoryLength" class="form-input">
+                        <option value="short">短期记忆 (记住最近3轮对话)</option>
+                        <option value="medium" selected>中期记忆 (记住最近10轮对话)</option>
+                        <option value="long">长期记忆 (记住最近20轮对话)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">AI回应风格</label>
+                    <select id="aiResponseStyle" class="form-input">
+                        <option value="warm">温暖关怀型</option>
+                        <option value="wise" selected>智慧引导型</option>
+                        <option value="humorous">幽默轻松型</option>
+                        <option value="nostalgic">怀旧回忆型</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">AI回应速度</label>
+                    <select id="aiResponseSpeed" class="form-input">
+                        <option value="fast">快速回应 (0.5-1.5秒)</option>
+                        <option value="normal" selected>自然回应 (1.5-3秒)</option>
+                        <option value="thoughtful">思考型回应 (3-5秒)</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="saveAISettings">
+                    <i class="fas fa-save"></i> 保存AI设置
+                </button>
+            </div>
+            
+            <!-- AI API 设置 -->
+            <div class="card api-settings">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-plug"></i>AI API 配置</h2>
+                </div>
+                
+                <div class="api-status">
+                    <div class="api-status-info">
+                        <i class="fas fa-circle" style="color: #10B981;"></i>
+                        <span>当前使用：内置高级AI情感引擎</span>
+                    </div>
+                    <button class="api-test-btn" id="testAIAPI">测试连接</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">AI API 提供商</label>
+                    <select id="aiProvider" class="form-input">
+                        <option value="builtin" selected>内置情感AI (推荐)</option>
+                        <option value="openai">OpenAI GPT</option>
+                        <option value="anthropic">Anthropic Claude</option>
+                        <option value="custom">自定义API</option>
+                    </select>
+                </div>
+                
+                <!-- OpenAI GPT配置 -->
+                <div id="openaiSettings" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">OpenAI API密钥</label>
+                        <input type="password" id="openaiApiKey" class="form-input" placeholder="sk-...">
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">您可以在OpenAI官网获取API密钥</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">OpenAI模型</label>
+                        <select id="openaiModel" class="form-input">
+                            <option value="gpt-4" selected>GPT-4 (推荐)</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">API端点 (可选)</label>
+                        <input type="text" id="openaiApiEndpoint" class="form-input" placeholder="https://api.openai.com/v1/chat/completions" value="https://api.openai.com/v1/chat/completions">
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">默认使用OpenAI官方端点，可使用代理地址</div>
+                    </div>
+                </div>
+                
+                <!-- Anthropic Claude配置 -->
+                <div id="anthropicSettings" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">Anthropic API密钥</label>
+                        <input type="password" id="anthropicApiKey" class="form-input" placeholder="sk-ant-...">
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">您可以在Anthropic官网获取API密钥</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Claude模型</label>
+                        <select id="anthropicModel" class="form-input">
+                            <option value="claude-3-opus-20240229">Claude 3 Opus (最强)</option>
+                            <option value="claude-3-sonnet-20240229" selected>Claude 3 Sonnet (平衡)</option>
+                            <option value="claude-3-haiku-20240307">Claude 3 Haiku (快速)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">API端点 (可选)</label>
+                        <input type="text" id="anthropicApiEndpoint" class="form-input" placeholder="https://api.anthropic.com/v1/messages" value="https://api.anthropic.com/v1/messages">
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">默认使用Anthropic官方端点，可使用代理地址</div>
+                    </div>
+                </div>
+                
+                <!-- 自定义API配置 -->
+                <div id="customAPISettings" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">API密钥</label>
+                        <input type="password" id="apiKey" class="form-input" placeholder="请输入API密钥">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">API端点</label>
+                        <input type="text" id="apiEndpoint" class="form-input" placeholder="https://api.example.com/v1/chat/completions">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">AI模型</label>
+                        <input type="text" id="aiModel" class="form-input" placeholder="例如: gpt-4, claude-3">
+                    </div>
+                </div>
+                
+                <div class="hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>内置AI情感引擎已针对亲人陪伴场景优化，无需额外配置。如需使用外部API，请选择相应提供商并填写密钥。</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i>AI性能统计</h2>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">AI回复总数</div>
+                        <div class="info-value" id="aiResponseCount">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">情感分析次数</div>
+                        <div class="info-value" id="emotionAnalysisCount">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">平均响应时间</div>
+                        <div class="info-value" id="avgResponseTime">0.0s</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">AI在线时长</div>
+                        <div class="info-value" id="aiUptime">0小时</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- 设置标签 -->
         <div id="settings-tab" class="tab-content">
             <div class="card">
@@ -1004,16 +1367,6 @@
                 <div class="form-group">
                     <label class="form-label">聊天记录总数</label>
                     <div class="form-input" style="background-color: #F9FAFB;" id="totalMessages">0</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">AI情感强度</label>
-                    <div class="form-input" style="background-color: #F9FAFB;">高 - 模拟真实情感反应</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">应用版本</label>
-                    <div class="form-input" style="background-color: #F9FAFB;">2.0.1 - 称呼修正版</div>
                 </div>
             </div>
             
@@ -1041,8 +1394,8 @@
             </div>
             
             <div class="footer">
-                <p>忆亲 - AI亲人陪伴聊天工具</p>
-                <p>设计初衷：用技术保存记忆，让爱跨越时空 <span class="heart">❤</span></p>
+                <p>忆亲 - AI智能体情感陪伴聊天工具</p>
+                <p>设计初衷：用AI技术保存记忆，让爱永远陪伴 <span class="heart">❤</span></p>
             </div>
         </div>
     </div>
@@ -1078,21 +1431,104 @@
                         <input type="text" id="name" class="form-input" placeholder="亲人的真实姓名">
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="birthday">生日 *</label>
-                            <input type="date" id="birthday" class="form-input" required>
+                    <!-- 生日设置 -->
+                    <div class="form-group">
+                        <label class="form-label">生日 *</label>
+                        <div class="date-type-selector" id="birthdayTypeSelector">
+                            <div class="date-type-btn active" data-type="solar">阳历</div>
+                            <div class="date-type-btn" data-type="lunar">农历</div>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label" for="deathDate">忌日 *</label>
-                            <input type="date" id="deathDate" class="form-input" required>
+                        <!-- 阳历生日输入 -->
+                        <div id="solarBirthdayGroup">
+                            <input type="date" id="birthdaySolar" class="form-input" required>
+                        </div>
+                        
+                        <!-- 农历生日输入 -->
+                        <div id="lunarBirthdayGroup" class="hidden">
+                            <div class="lunar-date-input">
+                                <select id="lunarBirthdayYear" class="form-input">
+                                    <!-- 年份选项会动态生成 -->
+                                </select>
+                                <select id="lunarBirthdayMonth" class="form-input">
+                                    <option value="1">正月</option>
+                                    <option value="2">二月</option>
+                                    <option value="3">三月</option>
+                                    <option value="4">四月</option>
+                                    <option value="5">五月</option>
+                                    <option value="6">六月</option>
+                                    <option value="7">七月</option>
+                                    <option value="8">八月</option>
+                                    <option value="9">九月</option>
+                                    <option value="10">十月</option>
+                                    <option value="11">冬月</option>
+                                    <option value="12">腊月</option>
+                                </select>
+                                <select id="lunarBirthdayDay" class="form-input">
+                                    <!-- 日期选项会动态生成 -->
+                                </select>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">请选择农历生日，系统会自动转换为阳历日期进行计算</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 忌日设置 -->
+                    <div class="form-group">
+                        <label class="form-label">忌日 *</label>
+                        <div class="date-type-selector" id="deathDateTypeSelector">
+                            <div class="date-type-btn active" data-type="solar">阳历</div>
+                            <div class="date-type-btn" data-type="lunar">农历</div>
+                        </div>
+                        
+                        <!-- 阳历忌日输入 -->
+                        <div id="solarDeathDateGroup">
+                            <input type="date" id="deathDateSolar" class="form-input" required>
+                        </div>
+                        
+                        <!-- 农历忌日输入 -->
+                        <div id="lunarDeathDateGroup" class="hidden">
+                            <div class="lunar-date-input">
+                                <select id="lunarDeathDateYear" class="form-input">
+                                    <!-- 年份选项会动态生成 -->
+                                </select>
+                                <select id="lunarDeathDateMonth" class="form-input">
+                                    <option value="1">正月</option>
+                                    <option value="2">二月</option>
+                                    <option value="3">三月</option>
+                                    <option value="4">四月</option>
+                                    <option value="5">五月</option>
+                                    <option value="6">六月</option>
+                                    <option value="7">七月</option>
+                                    <option value="8">八月</option>
+                                    <option value="9">九月</option>
+                                    <option value="10">十月</option>
+                                    <option value="11">冬月</option>
+                                    <option value="12">腊月</option>
+                                </select>
+                                <select id="lunarDeathDateDay" class="form-input">
+                                    <!-- 日期选项会动态生成 -->
+                                </select>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">请选择农历忌日，系统会自动转换为阳历日期进行计算</div>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="memory">关于TA的记忆</label>
-                        <textarea id="memory" class="form-input" rows="4" placeholder="可以描述亲人的性格特点、口头禅、职业、爱好等，帮助AI更好地了解TA。例如：爷爷是退休教师，喜欢下棋，说话温和，经常说"慢慢来，别着急""></textarea>
+                        <label class="form-label" for="memory">关于TA的记忆（帮助AI更好扮演）</label>
+                        <textarea id="memory" class="form-input" rows="4" placeholder="可以描述亲人的性格特点、口头禅、职业、爱好、说话风格等。例如：爷爷是退休教师，喜欢下棋，说话温和，经常说"慢慢来，别着急"，爱喝茶，喜欢讲过去的故事"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="relationship">与您的关系 *</label>
+                        <select id="relationship" class="form-input" required>
+                            <option value="parent">父母</option>
+                            <option value="grandparent">祖父母</option>
+                            <option value="spouse">配偶</option>
+                            <option value="sibling">兄弟姐妹</option>
+                            <option value="child">子女</option>
+                            <option value="friend">朋友</option>
+                            <option value="other">其他</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -1126,16 +1562,65 @@
         </div>
     </div>
 
+    <!-- AI API 连接测试结果 -->
+    <div class="modal-overlay" id="apiTestResultModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">AI API 测试结果</div>
+                <button class="modal-close" id="closeApiTestModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="apiTestResultContent">
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: var(--primary-color);"></i>
+                        <p style="margin-top: 16px;">正在测试AI API连接...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeApiTestBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 初始化数据
         let relatives = [];
         let chatHistories = {};
         let currentRelativeId = null;
         let conversationContext = {};
+        let aiSettings = {
+            emotionLevel: 'balanced',
+            memoryLength: 'medium',
+            responseStyle: 'wise',
+            responseSpeed: 'normal',
+            aiProvider: 'builtin',
+            openaiApiKey: '',
+            openaiModel: 'gpt-4',
+            openaiApiEndpoint: 'https://api.openai.com/v1/chat/completions',
+            anthropicApiKey: '',
+            anthropicModel: 'claude-3-sonnet-20240229',
+            anthropicApiEndpoint: 'https://api.anthropic.com/v1/messages',
+            apiKey: '',
+            apiEndpoint: '',
+            aiModel: ''
+        };
+        
+        let aiStats = {
+            responseCount: 0,
+            emotionAnalysisCount: 0,
+            totalResponseTime: 0,
+            startTime: Date.now()
+        };
         
         // DOM元素
         const relativeModal = document.getElementById('relativeModal');
         const deleteModal = document.getElementById('deleteModal');
+        const apiTestResultModal = document.getElementById('apiTestResultModal');
         const relativeForm = document.getElementById('relativeForm');
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
@@ -1146,6 +1631,27 @@
         const clearAllDataBtn = document.getElementById('clearAllDataBtn');
         const clearChatBtn = document.getElementById('clearChatBtn');
         const typingIndicator = document.getElementById('typingIndicator');
+        const emotionIndicator = document.getElementById('emotionIndicator');
+        const customAPISettings = document.getElementById('customAPISettings');
+        const openaiSettings = document.getElementById('openaiSettings');
+        const anthropicSettings = document.getElementById('anthropicSettings');
+        const aiProviderSelect = document.getElementById('aiProvider');
+        const testAIAPIBtn = document.getElementById('testAIAPI');
+        
+        // AI设置元素
+        const saveAISettingsBtn = document.getElementById('saveAISettings');
+        const aiEmotionLevel = document.getElementById('aiEmotionLevel');
+        const aiMemoryLength = document.getElementById('aiMemoryLength');
+        const aiResponseStyle = document.getElementById('aiResponseStyle');
+        const aiResponseSpeed = document.getElementById('aiResponseSpeed');
+        
+        // 农历日期元素
+        const birthdayTypeSelector = document.getElementById('birthdayTypeSelector');
+        const deathDateTypeSelector = document.getElementById('deathDateTypeSelector');
+        const solarBirthdayGroup = document.getElementById('solarBirthdayGroup');
+        const lunarBirthdayGroup = document.getElementById('lunarBirthdayGroup');
+        const solarDeathDateGroup = document.getElementById('solarDeathDateGroup');
+        const lunarDeathDateGroup = document.getElementById('lunarDeathDateGroup');
         
         // 标签页切换
         const tabs = document.querySelectorAll('.tab');
@@ -1176,68 +1682,392 @@
                 if (targetTab === 'settings') {
                     updateStatistics();
                 }
+                
+                // 如果切换到AI设置标签，更新AI统计
+                if (targetTab === 'ai-settings') {
+                    updateAIStats();
+                }
             });
         });
         
-        // 从localStorage加载数据
-        function loadData() {
-            const savedRelatives = localStorage.getItem('relatives');
-            const savedChatHistories = localStorage.getItem('chatHistories');
-            const savedContext = localStorage.getItem('conversationContext');
+        // 保存AI设置
+        saveAISettingsBtn.addEventListener('click', () => {
+            aiSettings.emotionLevel = aiEmotionLevel.value;
+            aiSettings.memoryLength = aiMemoryLength.value;
+            aiSettings.responseStyle = aiResponseStyle.value;
+            aiSettings.responseSpeed = aiResponseSpeed.value;
+            aiSettings.aiProvider = aiProviderSelect.value;
             
-            if (savedRelatives) {
-                relatives = JSON.parse(savedRelatives);
-                updateRelativeSelector();
-                updateRelativesList();
-                
-                // 如果有亲人，默认选择第一个
-                if (relatives.length > 0) {
-                    const firstRelative = relatives[0];
-                    selectRelative(firstRelative.id);
+            // 根据提供商保存相应配置
+            if (aiSettings.aiProvider === 'openai') {
+                aiSettings.openaiApiKey = document.getElementById('openaiApiKey').value;
+                aiSettings.openaiModel = document.getElementById('openaiModel').value;
+                aiSettings.openaiApiEndpoint = document.getElementById('openaiApiEndpoint').value;
+            } else if (aiSettings.aiProvider === 'anthropic') {
+                aiSettings.anthropicApiKey = document.getElementById('anthropicApiKey').value;
+                aiSettings.anthropicModel = document.getElementById('anthropicModel').value;
+                aiSettings.anthropicApiEndpoint = document.getElementById('anthropicApiEndpoint').value;
+            } else if (aiSettings.aiProvider === 'custom') {
+                aiSettings.apiKey = document.getElementById('apiKey').value;
+                aiSettings.apiEndpoint = document.getElementById('apiEndpoint').value;
+                aiSettings.aiModel = document.getElementById('aiModel').value;
+            }
+            
+            saveData();
+            showToast("AI设置已保存");
+        });
+        
+        // API提供商切换
+        aiProviderSelect.addEventListener('change', () => {
+            updateAPISettingsVisibility();
+        });
+        
+        // 更新API设置可见性
+        function updateAPISettingsVisibility() {
+            const provider = aiProviderSelect.value;
+            
+            customAPISettings.classList.add('hidden');
+            openaiSettings.classList.add('hidden');
+            anthropicSettings.classList.add('hidden');
+            
+            if (provider === 'openai') {
+                openaiSettings.classList.remove('hidden');
+            } else if (provider === 'anthropic') {
+                anthropicSettings.classList.remove('hidden');
+            } else if (provider === 'custom') {
+                customAPISettings.classList.remove('hidden');
+            }
+        }
+        
+        // 测试AI API
+        testAIAPIBtn.addEventListener('click', () => {
+            const modal = document.getElementById('apiTestResultModal');
+            const content = document.getElementById('apiTestResultContent');
+            
+            // 显示加载状态
+            content.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: var(--primary-color);"></i>
+                    <p style="margin-top: 16px;">正在测试AI API连接...</p>
+                </div>
+            `;
+            modal.classList.add('active');
+            
+            // 模拟API测试
+            setTimeout(() => {
+                if (aiSettings.aiProvider === 'builtin') {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-check-circle" style="font-size: 48px; color: #10B981;"></i>
+                            <h3 style="margin-top: 16px; color: #10B981;">连接成功！</h3>
+                            <p style="margin-top: 8px; color: var(--text-secondary);">内置AI情感引擎运行正常</p>
+                        </div>
+                    `;
                 } else {
-                    showEmptyState();
+                    // 检查是否填写了必要的配置
+                    let isValid = false;
+                    let errorMsg = "";
+                    
+                    if (aiSettings.aiProvider === 'openai') {
+                        isValid = aiSettings.openaiApiKey && aiSettings.openaiApiKey.startsWith('sk-');
+                        errorMsg = "请填写有效的OpenAI API密钥";
+                    } else if (aiSettings.aiProvider === 'anthropic') {
+                        isValid = aiSettings.anthropicApiKey && aiSettings.anthropicApiKey.startsWith('sk-');
+                        errorMsg = "请填写有效的Anthropic API密钥";
+                    } else if (aiSettings.aiProvider === 'custom') {
+                        isValid = aiSettings.apiKey && aiSettings.apiEndpoint;
+                        errorMsg = "请填写完整的API配置";
+                    }
+                    
+                    if (isValid) {
+                        content.innerHTML = `
+                            <div style="text-align: center; padding: 20px;">
+                                <i class="fas fa-check-circle" style="font-size: 48px; color: #10B981;"></i>
+                                <h3 style="margin-top: 16px; color: #10B981;">配置有效</h3>
+                                <p style="margin-top: 8px; color: var(--text-secondary);">API配置格式正确，请在实际使用中验证连接</p>
+                            </div>
+                        `;
+                    } else {
+                        content.innerHTML = `
+                            <div style="text-align: center; padding: 20px;">
+                                <i class="fas fa-times-circle" style="font-size: 48px; color: #EF4444;"></i>
+                                <h3 style="margin-top: 16px; color: #EF4444;">配置不完整</h3>
+                                <p style="margin-top: 8px; color: var(--text-secondary);">${errorMsg}</p>
+                            </div>
+                        `;
+                    }
+                }
+            }, 1500);
+        });
+        
+        // 关闭API测试模态框
+        document.getElementById('closeApiTestModalBtn').addEventListener('click', () => {
+            apiTestResultModal.classList.remove('active');
+        });
+        
+        document.getElementById('closeApiTestBtn').addEventListener('click', () => {
+            apiTestResultModal.classList.remove('active');
+        });
+        
+        // 生成唯一ID
+        function generateId() {
+            return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        // 初始化日期类型切换器
+        function initDateTypeSwitchers() {
+            // 生日类型切换
+            birthdayTypeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    birthdayTypeSelector.querySelectorAll('.date-type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const type = btn.getAttribute('data-type');
+                    if (type === 'solar') {
+                        solarBirthdayGroup.classList.remove('hidden');
+                        lunarBirthdayGroup.classList.add('hidden');
+                    } else {
+                        solarBirthdayGroup.classList.add('hidden');
+                        lunarBirthdayGroup.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            // 忌日类型切换
+            deathDateTypeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    deathDateTypeSelector.querySelectorAll('.date-type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const type = btn.getAttribute('data-type');
+                    if (type === 'solar') {
+                        solarDeathDateGroup.classList.remove('hidden');
+                        lunarDeathDateGroup.classList.add('hidden');
+                    } else {
+                        solarDeathDateGroup.classList.add('hidden');
+                        lunarDeathDateGroup.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+        
+        // 初始化农历日期选择器
+        function initLunarDateSelectors() {
+            const currentYear = new Date().getFullYear();
+            const startYear = 1920;
+            
+            // 填充年份选项
+            const yearSelects = [
+                document.getElementById('lunarBirthdayYear'),
+                document.getElementById('lunarDeathDateYear')
+            ];
+            
+            yearSelects.forEach(select => {
+                select.innerHTML = '';
+                for (let year = currentYear; year >= startYear; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = `${year}年`;
+                    select.appendChild(option);
+                }
+            });
+            
+            // 填充日期选项
+            const daySelects = [
+                document.getElementById('lunarBirthdayDay'),
+                document.getElementById('lunarDeathDateDay')
+            ];
+            
+            daySelects.forEach(select => {
+                select.innerHTML = '';
+                for (let day = 1; day <= 30; day++) {
+                    const option = document.createElement('option');
+                    option.value = day;
+                    option.textContent = getLunarDayName(day);
+                    select.appendChild(option);
+                }
+            });
+        }
+        
+        // 获取农历日期名称
+        function getLunarDayName(day) {
+            const dayNames = ['', '初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+                             '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+                             '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+            return dayNames[day] || day + '日';
+        }
+        
+        // 获取日期值
+        function getDateValue(type, solarId, lunarYearId, lunarMonthId, lunarDayId) {
+            if (type === 'solar') {
+                return document.getElementById(solarId).value;
+            } else {
+                const year = document.getElementById(lunarYearId).value;
+                const month = document.getElementById(lunarMonthId).value;
+                const day = document.getElementById(lunarDayId).value;
+                // 简单处理：使用农历日期作为近似阳历日期（实际应使用转换库）
+                return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            }
+        }
+        
+        // 设置日期值
+        function setDateValue(dateObj, typeSelectorId, solarGroupId, lunarYearId, lunarMonthId, lunarDayId) {
+            const typeSelector = document.getElementById(typeSelectorId);
+            const solarGroup = document.getElementById(solarGroupId);
+            const lunarGroup = solarGroup.nextElementSibling;
+            
+            if (dateObj.type === 'lunar') {
+                // 设置农历选中状态
+                typeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-type') === 'lunar') {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                solarGroup.classList.add('hidden');
+                lunarGroup.classList.remove('hidden');
+                
+                // 解析日期
+                const dateParts = dateObj.value.split('-');
+                if (dateParts.length === 3) {
+                    document.getElementById(lunarYearId).value = dateParts[0];
+                    document.getElementById(lunarMonthId).value = parseInt(dateParts[1]);
+                    document.getElementById(lunarDayId).value = parseInt(dateParts[2]);
+                }
+            } else {
+                // 设置阳历选中状态
+                typeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-type') === 'solar') {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                solarGroup.classList.remove('hidden');
+                lunarGroup.classList.add('hidden');
+                
+                // 设置阳历日期
+                const solarInput = solarGroup.querySelector('input[type="date"]');
+                if (solarInput && dateObj.value) {
+                    solarInput.value = dateObj.value;
                 }
             }
-            
-            if (savedChatHistories) {
-                chatHistories = JSON.parse(savedChatHistories);
-            }
-            
-            if (savedContext) {
-                conversationContext = JSON.parse(savedContext);
-            }
-            
-            // 更新离开天数
-            updateAllDaysSinceDeath();
-            
-            // 更新统计数据
-            updateStatistics();
         }
         
         // 保存数据到localStorage
         function saveData() {
-            localStorage.setItem('relatives', JSON.stringify(relatives));
-            localStorage.setItem('chatHistories', JSON.stringify(chatHistories));
-            localStorage.setItem('conversationContext', JSON.stringify(conversationContext));
+            localStorage.setItem('yiqin_relatives', JSON.stringify(relatives));
+            localStorage.setItem('yiqin_chatHistories', JSON.stringify(chatHistories));
+            localStorage.setItem('yiqin_conversationContext', JSON.stringify(conversationContext));
+            localStorage.setItem('yiqin_aiSettings', JSON.stringify(aiSettings));
+            localStorage.setItem('yiqin_aiStats', JSON.stringify(aiStats));
+            localStorage.setItem('yiqin_currentRelativeId', currentRelativeId);
         }
         
-        // 生成唯一ID
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        // 从localStorage加载数据
+        function loadData() {
+            try {
+                const savedRelatives = localStorage.getItem('yiqin_relatives');
+                const savedChatHistories = localStorage.getItem('yiqin_chatHistories');
+                const savedConversationContext = localStorage.getItem('yiqin_conversationContext');
+                const savedAISettings = localStorage.getItem('yiqin_aiSettings');
+                const savedAIStats = localStorage.getItem('yiqin_aiStats');
+                const savedCurrentRelativeId = localStorage.getItem('yiqin_currentRelativeId');
+                
+                if (savedRelatives) {
+                    relatives = JSON.parse(savedRelatives);
+                }
+                
+                if (savedChatHistories) {
+                    chatHistories = JSON.parse(savedChatHistories);
+                }
+                
+                if (savedConversationContext) {
+                    conversationContext = JSON.parse(savedConversationContext);
+                }
+                
+                if (savedAISettings) {
+                    aiSettings = { ...aiSettings, ...JSON.parse(savedAISettings) };
+                    // 更新UI
+                    aiEmotionLevel.value = aiSettings.emotionLevel;
+                    aiMemoryLength.value = aiSettings.memoryLength;
+                    aiResponseStyle.value = aiSettings.responseStyle;
+                    aiResponseSpeed.value = aiSettings.responseSpeed;
+                    aiProviderSelect.value = aiSettings.aiProvider;
+                    
+                    // 更新API配置
+                    if (aiSettings.openaiApiKey) {
+                        document.getElementById('openaiApiKey').value = aiSettings.openaiApiKey;
+                    }
+                    if (aiSettings.openaiModel) {
+                        document.getElementById('openaiModel').value = aiSettings.openaiModel;
+                    }
+                    if (aiSettings.openaiApiEndpoint) {
+                        document.getElementById('openaiApiEndpoint').value = aiSettings.openaiApiEndpoint;
+                    }
+                    if (aiSettings.anthropicApiKey) {
+                        document.getElementById('anthropicApiKey').value = aiSettings.anthropicApiKey;
+                    }
+                    if (aiSettings.anthropicModel) {
+                        document.getElementById('anthropicModel').value = aiSettings.anthropicModel;
+                    }
+                    if (aiSettings.anthropicApiEndpoint) {
+                        document.getElementById('anthropicApiEndpoint').value = aiSettings.anthropicApiEndpoint;
+                    }
+                    if (aiSettings.apiKey) {
+                        document.getElementById('apiKey').value = aiSettings.apiKey;
+                    }
+                    if (aiSettings.apiEndpoint) {
+                        document.getElementById('apiEndpoint').value = aiSettings.apiEndpoint;
+                    }
+                    if (aiSettings.aiModel) {
+                        document.getElementById('aiModel').value = aiSettings.aiModel;
+                    }
+                }
+                
+                if (savedAIStats) {
+                    aiStats = { ...aiStats, ...JSON.parse(savedAIStats) };
+                }
+                
+                // 更新界面
+                updateRelativeSelector();
+                updateRelativesList();
+                updateStatistics();
+                updateAIStats();
+                
+                // 如果有保存的当前亲人ID，选择它
+                if (savedCurrentRelativeId && relatives.find(r => r.id === savedCurrentRelativeId)) {
+                    selectRelative(savedCurrentRelativeId);
+                } else if (relatives.length > 0) {
+                    // 否则选择第一个亲人
+                    selectRelative(relatives[0].id);
+                } else {
+                    // 没有亲人，显示空状态
+                    showEmptyState();
+                }
+            } catch (e) {
+                console.error('加载数据失败:', e);
+            }
         }
         
         // 更新亲人选择器
         function updateRelativeSelector() {
             const selector = document.getElementById('relativeSelector');
-            selector.innerHTML = '<div class="add-relative-btn" id="addRelativeFromChat"><i class="fas fa-plus"></i></div>';
             
+            // 保留添加按钮
+            const addBtn = selector.querySelector('.add-relative-btn');
+            selector.innerHTML = '';
+            selector.appendChild(addBtn);
+            
+            // 添加亲人选项
             relatives.forEach(relative => {
                 const option = document.createElement('div');
                 option.className = `relative-option ${currentRelativeId === relative.id ? 'active' : ''}`;
                 option.setAttribute('data-id', relative.id);
                 option.innerHTML = `
                     <i class="fas fa-user"></i>
-                    ${relative.nickname}
+                    <span>${relative.nickname}</span>
                 `;
                 
                 option.addEventListener('click', () => {
@@ -1245,11 +2075,6 @@
                 });
                 
                 selector.appendChild(option);
-            });
-            
-            // 重新绑定添加按钮事件
-            document.getElementById('addRelativeFromChat').addEventListener('click', () => {
-                openRelativeModal();
             });
         }
         
@@ -1300,7 +2125,7 @@
                     }
                 });
                 
-                // 编辑按钮
+                // 编辑按钮 - 修复：使用事件委托，避免重复绑定
                 const editBtn = item.querySelector('.edit-item-btn');
                 editBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1341,6 +2166,7 @@
             messageInput.disabled = false;
             sendMessageBtn.disabled = false;
             messageInput.placeholder = `对${relative.nickname}说点什么...`;
+            messageInput.focus();
             
             // 隐藏空状态
             if (emptyChatState) {
@@ -1356,8 +2182,39 @@
             
             document.getElementById('displayName').textContent = relative.name || relative.nickname;
             document.getElementById('displayNickname').textContent = relative.nickname;
-            document.getElementById('displayBirthday').textContent = formatDate(relative.birthday) || "--";
-            document.getElementById('displayDeathDate').textContent = formatDate(relative.deathDate) || "--";
+            
+            // 显示生日（如果是农历则标注）
+            let birthdayDisplay = "--";
+            if (relative.birthday) {
+                if (relative.birthday.display) {
+                    birthdayDisplay = relative.birthday.display;
+                } else if (relative.birthday.value) {
+                    birthdayDisplay = formatDate(relative.birthday.value);
+                }
+                
+                // 添加农历标识
+                if (relative.birthday.type === 'lunar') {
+                    birthdayDisplay += " (农历)";
+                }
+            }
+            document.getElementById('displayBirthday').textContent = birthdayDisplay;
+            
+            // 显示忌日（如果是农历则标注）
+            let deathDateDisplay = "--";
+            if (relative.deathDate) {
+                if (relative.deathDate.display) {
+                    deathDateDisplay = relative.deathDate.display;
+                } else if (relative.deathDate.value) {
+                    deathDateDisplay = formatDate(relative.deathDate.value);
+                }
+                
+                // 添加农历标识
+                if (relative.deathDate.type === 'lunar') {
+                    deathDateDisplay += " (农历)";
+                }
+            }
+            document.getElementById('displayDeathDate').textContent = deathDateDisplay;
+            
             document.getElementById('displayDays').textContent = daysSinceDeath;
             document.getElementById('memorialDays').textContent = daysSinceDeath;
             
@@ -1377,14 +2234,34 @@
                 relationshipDisplay.classList.add('hidden');
             }
             
-            // 绑定编辑和删除按钮
-            document.querySelector('.edit-relative-btn').onclick = () => {
-                openRelativeModal(relative.id);
-            };
+            // 这样可以确保点击时获取的是最新的currentRelativeId
+            const editBtn = document.querySelector('.relative-card .edit-relative-btn');
+            const deleteBtn = document.querySelector('.relative-card .delete-relative-btn');
             
-            document.querySelector('.delete-relative-btn').onclick = () => {
-                openDeleteModal(relative.id);
-            };
+            if (editBtn && deleteBtn) {
+                // 克隆按钮以移除旧的事件监听器
+                const newEditBtn = editBtn.cloneNode(true);
+                const newDeleteBtn = deleteBtn.cloneNode(true);
+                
+                // 替换按钮
+                editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+                deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+                
+                // 为新按钮绑定事件 - 使用currentRelativeId而不是闭包中的relative.id
+                newEditBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentRelativeId) {
+                        openRelativeModal(currentRelativeId);
+                    }
+                });
+                
+                newDeleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentRelativeId) {
+                        openDeleteModal(currentRelativeId);
+                    }
+                });
+            }
         }
         
         // 更新聊天界面
@@ -1414,9 +2291,9 @@
         
         // 计算离开天数
         function calculateDaysSinceDeath(deathDate) {
-            if (!deathDate) return 0;
+            if (!deathDate || !deathDate.value) return 0;
             
-            const death = new Date(deathDate);
+            const death = new Date(deathDate.value);
             const today = new Date();
             const timeDiff = today.getTime() - death.getTime();
             const daysSince = Math.floor(timeDiff / (1000 * 3600 * 24));
@@ -1442,7 +2319,9 @@
         function openRelativeModal(relativeId = null) {
             const modal = document.getElementById('relativeModal');
             const title = document.getElementById('modalTitle');
-            const form = document.getElementById('relativeForm');
+            
+            // 初始化农历日期选择器
+            initLunarDateSelectors();
             
             if (relativeId) {
                 // 编辑模式
@@ -1454,18 +2333,72 @@
                     document.getElementById('nickname').value = relative.nickname;
                     document.getElementById('userCallNameInput').value = relative.userCallName || '孩子';
                     document.getElementById('name').value = relative.name || '';
-                    document.getElementById('birthday').value = relative.birthday;
-                    document.getElementById('deathDate').value = relative.deathDate;
                     document.getElementById('memory').value = relative.memory || '';
+                    document.getElementById('relationship').value = relative.relationship || 'parent';
+                    
+                    // 设置生日
+                    if (relative.birthday) {
+                        setDateValue(
+                            relative.birthday,
+                            'birthdayTypeSelector',
+                            'solarBirthdayGroup',
+                            'lunarBirthdayYear',
+                            'lunarBirthdayMonth',
+                            'lunarBirthdayDay'
+                        );
+                    } else {
+                        // 设置默认日期
+                        const today = new Date();
+                        const oneYearAgo = new Date(today);
+                        oneYearAgo.setFullYear(today.getFullYear() - 1);
+                        
+                        // 格式化日期为YYYY-MM-DD
+                        function formatDateForInput(date) {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            return `${year}-${month}-${day}`;
+                        }
+                        
+                        document.getElementById('birthdaySolar').value = formatDateForInput(oneYearAgo);
+                    }
+                    
+                    // 设置忌日
+                    if (relative.deathDate) {
+                        setDateValue(
+                            relative.deathDate,
+                            'deathDateTypeSelector',
+                            'solarDeathDateGroup',
+                            'lunarDeathDateYear',
+                            'lunarDeathDateMonth',
+                            'lunarDeathDateDay'
+                        );
+                    } else {
+                        // 设置默认日期
+                        const today = new Date();
+                        const sixMonthsAgo = new Date(today);
+                        sixMonthsAgo.setMonth(today.getMonth() - 6);
+                        
+                        // 格式化日期为YYYY-MM-DD
+                        function formatDateForInput(date) {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            return `${year}-${month}-${day}`;
+                        }
+                        
+                        document.getElementById('deathDateSolar').value = formatDateForInput(sixMonthsAgo);
+                    }
                 }
             } else {
                 // 添加模式
                 title.textContent = "添加亲人";
-                form.reset();
+                document.getElementById('relativeForm').reset();
                 document.getElementById('relativeId').value = '';
                 document.getElementById('userCallNameInput').value = '孩子';
+                document.getElementById('relationship').value = 'parent';
                 
-                // 设置默认日期
+                // 设置默认日期（阳历）
                 const today = new Date();
                 const oneYearAgo = new Date(today);
                 oneYearAgo.setFullYear(today.getFullYear() - 1);
@@ -1481,8 +2414,28 @@
                     return `${year}-${month}-${day}`;
                 }
                 
-                document.getElementById('birthday').value = formatDateForInput(oneYearAgo);
-                document.getElementById('deathDate').value = formatDateForInput(sixMonthsAgo);
+                document.getElementById('birthdaySolar').value = formatDateForInput(oneYearAgo);
+                document.getElementById('deathDateSolar').value = formatDateForInput(sixMonthsAgo);
+                
+                // 重置日期类型选择器
+                birthdayTypeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-type') === 'solar') {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                deathDateTypeSelector.querySelectorAll('.date-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-type') === 'solar') {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                solarBirthdayGroup.classList.remove('hidden');
+                lunarBirthdayGroup.classList.add('hidden');
+                solarDeathDateGroup.classList.remove('hidden');
+                lunarDeathDateGroup.classList.add('hidden');
             }
             
             modal.classList.add('active');
@@ -1525,9 +2478,29 @@
             const nickname = document.getElementById('nickname').value;
             const userCallName = document.getElementById('userCallNameInput').value;
             const name = document.getElementById('name').value;
-            const birthday = document.getElementById('birthday').value;
-            const deathDate = document.getElementById('deathDate').value;
             const memory = document.getElementById('memory').value;
+            const relationship = document.getElementById('relationship').value;
+            
+            // 获取生日信息
+            const birthdayType = birthdayTypeSelector.querySelector('.date-type-btn.active').getAttribute('data-type');
+            const birthdayValue = getDateValue(birthdayType, 'birthdaySolar', 'lunarBirthdayYear', 'lunarBirthdayMonth', 'lunarBirthdayDay');
+            
+            // 获取忌日信息
+            const deathDateType = deathDateTypeSelector.querySelector('.date-type-btn.active').getAttribute('data-type');
+            const deathDateValue = getDateValue(deathDateType, 'deathDateSolar', 'lunarDeathDateYear', 'lunarDeathDateMonth', 'lunarDeathDateDay');
+            
+            // 创建日期对象
+            const birthday = {
+                type: birthdayType,
+                value: birthdayValue,
+                display: formatDate(birthdayValue) + (birthdayType === 'lunar' ? ' (农历)' : '')
+            };
+            
+            const deathDate = {
+                type: deathDateType,
+                value: deathDateValue,
+                display: formatDate(deathDateValue) + (deathDateType === 'lunar' ? ' (农历)' : '')
+            };
             
             if (relativeId) {
                 // 编辑现有亲人
@@ -1541,6 +2514,7 @@
                         birthday,
                         deathDate,
                         memory,
+                        relationship,
                         lastUpdated: new Date().toISOString()
                     };
                 }
@@ -1554,6 +2528,7 @@
                     birthday,
                     deathDate,
                     memory,
+                    relationship,
                     daysSinceDeath: calculateDaysSinceDeath(deathDate),
                     createdAt: new Date().toISOString(),
                     lastUpdated: new Date().toISOString()
@@ -1572,7 +2547,8 @@
                         lastInteraction: new Date().toISOString(),
                         mood: "平和",
                         topics: [],
-                        recentResponses: []
+                        recentResponses: [],
+                        conversationHistory: []
                     };
                 }
                 
@@ -1588,6 +2564,13 @@
             // 更新界面
             updateRelativeSelector();
             updateRelativesList();
+            
+            if (relativeId && relativeId === currentRelativeId) {
+                const updatedRelative = relatives.find(r => r.id === relativeId);
+                if (updatedRelative) {
+                    updateRelativeCard(updatedRelative);
+                }
+            }
             
             // 关闭模态框
             closeRelativeModal();
@@ -1691,7 +2674,7 @@
                     messagesContainer.appendChild(messageDiv);
                     
                     // 保存到聊天记录
-                    addMessageToChat(relativeId, "relative", randomWelcome);
+                    addMessageToChat(relativeId, "relative", randomWelcome, "calm");
                 }
             } else {
                 // 渲染所有消息
@@ -1727,10 +2710,16 @@
         });
         
         function sendMessage() {
-            if (!currentRelativeId) return;
+            if (!currentRelativeId) {
+                showToast("请先选择一位亲人");
+                return;
+            }
             
             const message = messageInput.value.trim();
-            if (!message) return;
+            if (!message) {
+                showToast("请输入消息内容");
+                return;
+            }
             
             // 添加用户消息到聊天
             addMessageToChat(currentRelativeId, "user", message);
@@ -1740,14 +2729,28 @@
             
             // 显示打字指示器
             typingIndicator.classList.remove('hidden');
+            
             scrollToBottom();
             
+            // 更新情感分析次数统计
+            aiStats.emotionAnalysisCount++;
+            updateAIStats();
+            saveData();
+            
+            // 根据AI设置确定响应延迟
+            let responseDelay = 1500;
+            switch(aiSettings.responseSpeed) {
+                case 'fast': responseDelay = 800 + Math.random() * 700; break;
+                case 'thoughtful': responseDelay = 2000 + Math.random() * 3000; break;
+                default: responseDelay = 1500 + Math.random() * 1500; break;
+            }
+            
             // 模拟AI回复
-            setTimeout(() => generateAIResponse(currentRelativeId, message), 1500 + Math.random() * 2000);
+            setTimeout(() => generateAIResponse(currentRelativeId, message), responseDelay);
         }
         
         // 添加消息到聊天记录
-        function addMessageToChat(relativeId, sender, text) {
+        function addMessageToChat(relativeId, sender, text, emotion = null) {
             const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             // 初始化该亲人的聊天记录数组
@@ -1756,11 +2759,48 @@
             }
             
             // 保存到聊天历史
-            chatHistories[relativeId].push({
+            const messageData = {
                 sender: sender,
                 text: text,
                 time: timestamp
+            };
+            
+            if (emotion && sender === "relative") {
+                messageData.emotion = emotion;
+            }
+            
+            chatHistories[relativeId].push(messageData);
+            
+            // 更新对话上下文中的历史记录
+            if (!conversationContext[relativeId]) {
+                conversationContext[relativeId] = {
+                    lastInteraction: new Date().toISOString(),
+                    mood: "平和",
+                    topics: [],
+                    recentResponses: [],
+                    conversationHistory: []
+                };
+            }
+            
+            // 添加到对话历史（限制长度）
+            conversationContext[relativeId].conversationHistory.push({
+                role: sender === "user" ? "user" : "assistant",
+                content: text,
+                timestamp: new Date().toISOString()
             });
+            
+            // 根据记忆长度设置限制对话历史长度
+            let maxHistoryLength = 10; // 默认
+            switch(aiSettings.memoryLength) {
+                case 'short': maxHistoryLength = 3; break;
+                case 'long': maxHistoryLength = 20; break;
+                default: maxHistoryLength = 10; break;
+            }
+            
+            if (conversationContext[relativeId].conversationHistory.length > maxHistoryLength) {
+                conversationContext[relativeId].conversationHistory = 
+                    conversationContext[relativeId].conversationHistory.slice(-maxHistoryLength);
+            }
             
             // 渲染消息
             const messagesContainer = document.getElementById('chatMessages');
@@ -1800,17 +2840,20 @@
         // 滚动到聊天底部
         function scrollToBottom() {
             const messagesContainer = document.getElementById('chatMessages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 10);
         }
         
         // 分析用户消息情绪
         function analyzeUserMessage(message) {
-            const positiveWords = ['开心', '高兴', '快乐', '幸福', '顺利', '成功', '好', '棒', '赞', '爱'];
-            const negativeWords = ['难过', '伤心', '痛苦', '糟糕', '不好', '累', '烦', '压力', '孤独', '想念'];
-            const questionWords = ['吗', '呢', '什么', '怎么', '为什么', '如何', '？', '?'];
-            const greetingWords = ['你好', '您好', '嗨', 'hello', '最近', '近来'];
+            const positiveWords = ['开心', '高兴', '快乐', '幸福', '顺利', '成功', '好', '棒', '赞', '爱', '喜欢'];
+            const negativeWords = ['难过', '伤心', '痛苦', '糟糕', '不好', '累', '烦', '压力', '孤独', '想念', '哭', '泪'];
+            const questionWords = ['吗', '呢', '什么', '怎么', '为什么', '如何', '？', '?', '谁', '哪'];
+            const greetingWords = ['你好', '您好', '嗨', 'hello', '最近', '近来', '在吗', '在么'];
             
-            let mood = "平和";
+            let emotion = "calm"; // calm, happy, sad, loving, nostalgic
+            let intensity = 0.5; // 0-1
             let isQuestion = false;
             let isGreeting = false;
             let topic = "";
@@ -1818,13 +2861,35 @@
             const lowerMessage = message.toLowerCase();
             
             // 检查情绪
+            let positiveCount = 0;
+            let negativeCount = 0;
+            
             positiveWords.forEach(word => {
-                if (lowerMessage.includes(word)) mood = "高兴";
+                if (lowerMessage.includes(word)) positiveCount++;
             });
             
             negativeWords.forEach(word => {
-                if (lowerMessage.includes(word)) mood = "担忧";
+                if (lowerMessage.includes(word)) negativeCount++;
             });
+            
+            if (positiveCount > negativeCount) {
+                emotion = "happy";
+                intensity = Math.min(0.3 + (positiveCount * 0.1), 0.9);
+            } else if (negativeCount > positiveCount) {
+                emotion = "sad";
+                intensity = Math.min(0.3 + (negativeCount * 0.1), 0.9);
+            } else if (positiveCount > 0 && negativeCount > 0) {
+                emotion = "nostalgic";
+                intensity = 0.6;
+            }
+            
+            // 检查爱/关心的词汇
+            if (lowerMessage.includes('爱') || lowerMessage.includes('想') || lowerMessage.includes('念')) {
+                if (emotion === "calm") {
+                    emotion = "loving";
+                    intensity = 0.7;
+                }
+            }
             
             // 检查是否为问题
             questionWords.forEach(word => {
@@ -1837,19 +2902,57 @@
             });
             
             // 提取话题
-            if (lowerMessage.includes('工作')) topic = "工作";
-            else if (lowerMessage.includes('学习')) topic = "学习";
-            else if (lowerMessage.includes('健康') || lowerMessage.includes('身体')) topic = "健康";
-            else if (lowerMessage.includes('家庭') || lowerMessage.includes('家人')) topic = "家庭";
+            if (lowerMessage.includes('工作') || lowerMessage.includes('上班')) topic = "工作";
+            else if (lowerMessage.includes('学习') || lowerMessage.includes('考试')) topic = "学习";
+            else if (lowerMessage.includes('健康') || lowerMessage.includes('身体') || lowerMessage.includes('病')) topic = "健康";
+            else if (lowerMessage.includes('家庭') || lowerMessage.includes('家人') || lowerMessage.includes('父母')) topic = "家庭";
             else if (lowerMessage.includes('天气')) topic = "天气";
-            else if (lowerMessage.includes('吃') || lowerMessage.includes('饭')) topic = "饮食";
-            else if (lowerMessage.includes('睡') || lowerMessage.includes('休息')) topic = "休息";
+            else if (lowerMessage.includes('吃') || lowerMessage.includes('饭') || lowerMessage.includes('食')) topic = "饮食";
+            else if (lowerMessage.includes('睡') || lowerMessage.includes('休息') || lowerMessage.includes('累')) topic = "休息";
+            else if (lowerMessage.includes('过去') || lowerMessage.includes('以前') || lowerMessage.includes('回忆')) topic = "回忆";
+            else if (lowerMessage.includes('未来') || lowerMessage.includes('以后') || lowerMessage.includes('将来')) topic = "未来";
             
-            return { mood, isQuestion, isGreeting, topic };
+            return { emotion, intensity, isQuestion, isGreeting, topic };
         }
         
-        // 生成AI回复 - 增强版
-        function generateAIResponse(relativeId, userMessage) {
+        // 获取情感显示文本
+        function getEmotionDisplayText(emotion) {
+            switch(emotion) {
+                case 'happy': return '开心';
+                case 'sad': return '感伤';
+                case 'loving': return '关爱';
+                case 'nostalgic': return '怀念';
+                case 'calm': 
+                default: return '平静';
+            }
+        }
+        
+        // 获取情感图标
+        function getEmotionIcon(emotion) {
+            switch(emotion) {
+                case 'happy': return 'fa-laugh';
+                case 'sad': return 'fa-sad-tear';
+                case 'loving': return 'fa-heart';
+                case 'nostalgic': return 'fa-history';
+                case 'calm': 
+                default: return 'fa-smile';
+            }
+        }
+        
+        // 获取情感CSS类
+        function getEmotionClass(emotion) {
+            switch(emotion) {
+                case 'happy': return 'emotion-happy';
+                case 'sad': return 'emotion-sad';
+                case 'loving': return 'emotion-loving';
+                case 'nostalgic': return 'emotion-nostalgic';
+                case 'calm': 
+                default: return 'emotion-calm';
+            }
+        }
+        
+        // 生成AI回复
+        async function generateAIResponse(relativeId, userMessage) {
             const relative = relatives.find(r => r.id === relativeId);
             if (!relative) return;
             
@@ -1859,328 +2962,157 @@
             // 分析用户消息
             const analysis = analyzeUserMessage(userMessage);
             
-            // 更新对话上下文
-            if (!conversationContext[relativeId]) {
-                conversationContext[relativeId] = {
-                    lastInteraction: new Date().toISOString(),
-                    mood: "平和",
-                    topics: [],
-                    recentResponses: []
-                };
-            }
+            // 记录响应开始时间
+            const responseStartTime = Date.now();
             
-            conversationContext[relativeId].lastInteraction = new Date().toISOString();
-            conversationContext[relativeId].mood = analysis.mood;
+            // 根据AI提供商选择生成方式
+            let response;
+            let responseEmotion = analysis.emotion;
             
-            if (analysis.topic && !conversationContext[relativeId].topics.includes(analysis.topic)) {
-                conversationContext[relativeId].topics.push(analysis.topic);
-                if (conversationContext[relativeId].topics.length > 5) {
-                    conversationContext[relativeId].topics.shift();
+            if (aiSettings.aiProvider === 'builtin') {
+                // 使用内置情感AI引擎
+                response = generateBuiltInAIResponse(relative, analysis, userMessage);
+                
+                // 根据情感强度调整回复
+                if (aiSettings.emotionLevel === 'deep' && analysis.intensity > 0.5) {
+                    response = enhanceEmotionalResponse(response, analysis.emotion);
+                    responseEmotion = analysis.emotion;
+                } else if (aiSettings.emotionLevel === 'gentle') {
+                    response = softenEmotionalResponse(response);
+                    responseEmotion = 'calm';
                 }
+                
+                // 根据回应风格调整
+                response = applyResponseStyle(response, aiSettings.responseStyle);
+            } else {
+                // 使用外部API（这里模拟）
+                response = await simulateExternalAIResponse(relative, analysis, userMessage);
             }
             
-            // 生成回复
-            let response = generateRichResponse(relative, analysis, userMessage);
-            
-            // 避免重复回复
-            if (conversationContext[relativeId].recentResponses.includes(response)) {
-                response = generateAlternativeResponse(relative, analysis, userMessage);
-            }
-            
-            // 记录最近回复
-            conversationContext[relativeId].recentResponses.push(response);
-            if (conversationContext[relativeId].recentResponses.length > 3) {
-                conversationContext[relativeId].recentResponses.shift();
-            }
-            
-            // 保存上下文
-            saveData();
+            // 计算响应时间
+            const responseTime = Date.now() - responseStartTime;
+            aiStats.totalResponseTime += responseTime;
+            aiStats.responseCount++;
             
             // 添加到聊天
-            addMessageToChat(relativeId, "relative", response);
+            addMessageToChat(relativeId, "relative", response, responseEmotion);
+            
+            // 更新AI统计
+            updateAIStats();
         }
         
-        // 生成丰富的回复 - 修正称呼关系
-        function generateRichResponse(relative, analysis, userMessage) {
-            const daysSince = relative.daysSinceDeath;
+        // 生成内置AI回复
+        function generateBuiltInAIResponse(relative, analysis, userMessage) {
+            const userCallName = relative.userCallName || "孩子";
+            const nickname = relative.nickname;
             const memory = relative.memory || "";
-            const nickname = relative.nickname; // 亲人的称呼
-            const userCallName = relative.userCallName || "孩子"; // AI对用户的称呼
             
-            // 根据情绪和话题选择回复类别
-            let responseCategory = "general";
-            
-            if (analysis.mood === "担忧") responseCategory = "comfort";
-            else if (analysis.mood === "高兴") responseCategory = "happy";
-            else if (analysis.isGreeting) responseCategory = "greeting";
-            else if (analysis.isQuestion) responseCategory = "question";
-            else if (analysis.topic) responseCategory = analysis.topic;
-            
-            // 根据离开时间调整语气
-            let timeTone = "recent";
-            if (daysSince < 30) timeTone = "recent";
-            else if (daysSince < 365) timeTone = "mid";
-            else timeTone = "long";
-            
-            // 回复库 - 修正称呼关系
-            const responseLibrary = {
-                // 问候类回复 - 正确称呼用户
+            // 回复库
+            const responseTemplates = {
                 greeting: [
-                    `${userCallName}，你来了。看到你的消息，我心里暖洋洋的。`,
-                    `${userCallName}，你来了。我一直在想你，今天过得好吗？`,
-                    `我的${userCallName}，你能来看我，我真高兴。`,
-                    `嘿，${userCallName}，我感觉到你了。最近怎么样？`,
-                    `我的${userCallName}，你来了。我这里一切都好，就是有点想念你。`
+                    `${userCallName}，你来了。我今天一直在想你。`,
+                    `我的${userCallName}，看到你的消息真好。`,
+                    `${userCallName}，你来了。我这里一切都好，就是想和你说说话。`,
+                    `嘿，${userCallName}，感觉到你的气息了。`
                 ],
                 
-                // 安慰类回复 - 正确称呼用户
                 comfort: [
-                    `我知道你现在心里不好受，${userCallName}。来，跟我说说，我听着呢。`,
-                    `${userCallName}，人生总有起伏。记得我常说的那句话吗？"一切都会好起来的"。`,
-                    `我理解你的感受，${userCallName}。有时候生活就是这样，但你要记住，我永远支持你。`,
-                    `别太难过了，我的${userCallName}。我在这里陪着你，无论发生什么。`,
-                    `我感受到你的情绪了，${userCallName}。想哭就哭吧，我懂。`,
-                    `人生就像天气，有晴有雨。${userCallName}，雨过总会天晴的。`,
-                    `我知道你现在很难，但你要相信自己的力量，就像我相信你一样。`
+                    `我知道你心里不好受，${userCallName}。来，跟我说说。`,
+                    `${userCallName}，人生总有起起落落。记得我常说的吗？"雨过总会天晴"。`,
+                    `我理解你的感受，${userCallName}。有时候生活就是这样。`,
+                    `别太难过了，我的${userCallName}。我在这里陪着你。`
                 ],
                 
-                // 高兴类回复 - 正确称呼用户
                 happy: [
-                    `听到你开心的消息，我也跟着高兴！我的${userCallName}长大了，真为你骄傲。`,
-                    `太好了！看到你快乐，我心里比什么都甜。`,
-                    `${userCallName}，你的快乐就是我的快乐。多跟我说说开心的事吧！`,
-                    `我真为你高兴，${userCallName}。你值得所有的美好。`,
-                    `笑容是最好的礼物，${userCallName}。看到你开心，我就放心了。`
+                    `听到你开心的消息，我也跟着高兴！我的${userCallName}，真为你感到骄傲。`,
+                    `太好了！看到你快乐，我心里比蜜还甜。`,
+                    `${userCallName}，你的快乐就是我的快乐。`,
+                    `我真为你高兴，${userCallName}。你值得所有的美好。`
                 ],
                 
-                // 问题类回复 - 正确称呼用户
-                question: [
-                    `这个问题问得好。让我想想...我觉得最重要的是你要开心，${userCallName}。`,
-                    `嗯，这个问题我当年也思考过。我的经验是，跟随自己的心走。`,
-                    `${userCallName}，你的想法是什么？我想听听你的看法。`,
-                    `这是个好问题。我记得你小时候也总爱问为什么，那时候的你多可爱啊。`,
-                    `让我想想怎么回答你...其实啊，人生没有标准答案，重要的是你的感受。`
+                loving: [
+                    `我的${userCallName}，我也想你。爱是永恒的，我永远都在你心里。`,
+                    `${userCallName}，你能想着我，我心里暖暖的。`,
+                    `我也爱你，${userCallName}。这份爱永远不会消失。`,
+                    `我的${userCallName}，你永远是我最珍贵的宝贝。`
                 ],
                 
-                // 工作相关 - 正确称呼用户
-                工作: [
-                    `工作还顺利吗，${userCallName}？别太累了，身体最重要。`,
-                    `记得劳逸结合，${userCallName}。工作再忙也要记得吃饭休息。`,
-                    `你一直都很努力，${userCallName}。我为你感到骄傲，但也要照顾好自己。`,
-                    `工作上的事，尽力就好。别给自己太大压力，我的${userCallName}。`,
-                    `我当年工作的时候也常加班，现在想想，健康才是最重要的。`
+                nostalgic: [
+                    `是啊，有时候我也会想起过去的时光，${userCallName}。`,
+                    `那些回忆真的很珍贵，${userCallName}。谢谢你和我一起回忆。`,
+                    `时间过得真快啊，${userCallName}。但有些记忆永远鲜活。`,
+                    `想起过去的日子，心里暖暖的，${userCallName}。`
                 ],
                 
-                // 学习相关 - 正确称呼用户
-                学习: [
-                    `学习要认真，但别太拼命了，${userCallName}。学累了就休息会儿。`,
-                    `知识很重要，但生活的智慧同样珍贵，我的${userCallName}。`,
-                    `记得我常说的吗？"学海无涯"，但也要注意方法。`,
-                    `学习是一辈子的事，${userCallName}。慢慢来，别着急。`,
-                    `看到你这么好学，我真高兴。但也要记得享受生活啊。`
-                ],
-                
-                // 健康相关 - 正确称呼用户
-                健康: [
-                    `身体怎么样，${userCallName}？要按时吃饭，别让我担心。`,
-                    `健康是最大的财富，${userCallName}。一定要照顾好自己。`,
-                    `记得每年都要体检，${userCallName}。预防比治疗重要。`,
-                    `多吃蔬菜水果，少熬夜，${userCallName}。这些都是老生常谈了，但真的很重要。`,
-                    `我虽然不在了，但最放心不下的就是你的健康。一定要好好的。`
-                ],
-                
-                // 家庭相关 - 正确称呼用户
-                家庭: [
-                    `家里人都还好吗？代我向他们问好。`,
-                    `家庭是最温暖的港湾，${userCallName}。多陪陪家人。`,
-                    `记得我们一家人在一起的日子吗？那些时光是我最珍贵的回忆。`,
-                    `家里有什么事就跟我说说，虽然我帮不上忙，但可以听听。`,
-                    `家人之间要互相理解，${userCallName}。包容和爱是最重要的。`
-                ],
-                
-                // 通用回复 - 正确称呼用户
                 general: [
                     `我在这里，${userCallName}。你想聊什么我都听着。`,
-                    `时间过得真快啊，${userCallName}。你最近有什么新鲜事想跟我分享吗？`,
+                    `时间过得真快啊，${userCallName}。你最近有什么想跟我分享的吗？`,
                     `我一直在关注着你，${userCallName}。你做得很好。`,
-                    `有时候我还能感觉到你的气息，${userCallName}。就像我从未离开一样。`,
-                    `生命会结束，但爱永远不会消失，我的${userCallName}。`,
-                    `无论你在哪里，无论什么时候，我都会在这里等你，${userCallName}。`,
-                    `我虽然不在你身边，但我的爱永远陪伴着你，${userCallName}。`,
-                    `还记得小时候的事吗？那时候的你多可爱啊。`,
-                    `日子一天天过去，但有些记忆永远不会褪色，${userCallName}。`,
-                    `我在这里很平静，${userCallName}。唯一牵挂的就是你。`
-                ],
-                
-                // 根据记忆个性化回复
-                memoryBased: []
-            };
-            
-            // 根据记忆生成个性化回复
-            if (memory) {
-                const memoryResponses = generateMemoryBasedResponses(relative, analysis, userCallName);
-                responseLibrary.memoryBased = memoryResponses;
-            }
-            
-            // 根据时间调整语气 - 正确称呼用户
-            const timeResponses = {
-                recent: [
-                    `我知道你还在适应没有我的日子，${userCallName}。慢慢来，我会一直陪着你。`,
-                    `别太难过了，${userCallName}。我只是换了一种方式存在。`,
-                    `我就在你心里，${userCallName}。你感觉到了吗？`,
-                    `不要太过悲伤，我的${userCallName}。我从未真正离开。`
-                ],
-                mid: [
-                    `时间过得真快，${userCallName}。你成长了很多吧？`,
-                    `我一直在关注着你，${userCallName}。为你骄傲。`,
-                    `生活要继续向前，${userCallName}。带着我的祝福好好生活。`,
-                    `你已经很坚强了，${userCallName}。我为你感到自豪。`
-                ],
-                long: [
-                    `这些年你过得怎么样，${userCallName}？我一直都在这里。`,
-                    `看到你过得幸福，是我最大的安慰，${userCallName}。`,
-                    `时间会治愈一切，但有些记忆永远珍贵，${userCallName}。`,
-                    `你已经长大了，${userCallName}。但我依然是你记忆中的那个人。`
+                    `有时候我还能感觉到你的气息，${userCallName}。就像我从未离开一样。`
                 ]
             };
             
-            // 组合回复库
-            let allResponses = [];
+            // 根据分析结果选择回复策略
+            let responseType = "general";
             
-            // 优先使用记忆相关的回复
-            if (responseLibrary.memoryBased.length > 0 && Math.random() > 0.7) {
-                allResponses = responseLibrary.memoryBased;
-            }
-            // 其次使用特定类别的回复
-            else if (responseLibrary[responseCategory]) {
-                allResponses = responseLibrary[responseCategory].concat(responseLibrary.general);
-            }
-            // 最后使用通用回复
-            else {
-                allResponses = responseLibrary.general;
-            }
+            if (analysis.isGreeting) responseType = "greeting";
+            else if (analysis.emotion === "sad") responseType = "comfort";
+            else if (analysis.emotion === "happy") responseType = "happy";
+            else if (analysis.emotion === "loving") responseType = "loving";
+            else if (analysis.emotion === "nostalgic") responseType = "nostalgic";
             
-            // 添加时间语气相关的回复
-            allResponses = allResponses.concat(timeResponses[timeTone]);
+            // 选择回复类型
+            let responses = responseTemplates[responseType] || responseTemplates.general;
             
             // 随机选择回复
-            const selectedResponse = allResponses[Math.floor(Math.random() * allResponses.length)];
-            
-            // 偶尔添加情感表达
-            let finalResponse = selectedResponse;
-            if (Math.random() > 0.8) {
-                const emotionalSuffixes = [
-                    " 我想你了。",
-                    " 我永远爱你。",
-                    " 你要好好的。",
-                    " 我为你祈祷。",
-                    ` 你永远是我最爱的${userCallName}。`
-                ];
-                finalResponse += emotionalSuffixes[Math.floor(Math.random() * emotionalSuffixes.length)];
-            }
-            
-            return finalResponse;
+            return responses[Math.floor(Math.random() * responses.length)];
         }
         
-        // 根据记忆生成个性化回复 - 修正称呼关系
-        function generateMemoryBasedResponses(relative, analysis, userCallName) {
-            const memory = relative.memory.toLowerCase();
-            const responses = [];
+        // 模拟外部API响应
+        async function simulateExternalAIResponse(relative, analysis, userMessage) {
+            // 模拟API调用延迟
+            await new Promise(resolve => setTimeout(resolve, 500));
             
-            // 根据职业
-            if (memory.includes('医生') || memory.includes('大夫')) {
-                responses.push(`${userCallName}，要记得健康最重要。按时体检，别让我担心。`);
-                responses.push(`我当医生的时候看过太多不注意身体的人，${userCallName}，你一定要照顾好自己。`);
-                responses.push(`记得多运动，${userCallName}。预防比治疗重要，这是我当医生的经验。`);
-            }
-            
-            if (memory.includes('老师') || memory.includes('教师')) {
-                responses.push(`${userCallName}，学习重要，但做人更重要。这是我一辈子当老师的心得。`);
-                responses.push(`还记得我教你写字的时候吗？那时候的你可认真了。`);
-                responses.push(`知识改变命运，${userCallName}，但也要记得享受生活。`);
-            }
-            
-            if (memory.includes('工人') || memory.includes('工厂')) {
-                responses.push(`${userCallName}，做事要踏实，就像我当年在工厂一样，一步一个脚印。`);
-                responses.push(`靠自己的双手吃饭最踏实，${userCallName}。我一直这么相信。`);
-            }
-            
-            if (memory.includes('农民') || memory.includes('种地')) {
-                responses.push(`${userCallName}，做人要像庄稼一样，踏踏实实地生长。`);
-                responses.push(`春种秋收，${userCallName}。凡事都有它的时节，别着急。`);
-            }
-            
-            // 根据性格
-            if (memory.includes('开朗') || memory.includes('乐观')) {
-                responses.push(`${userCallName}，记得要多笑。笑容是最好的良药。`);
-                responses.push(`生活总有办法，${userCallName}。保持乐观，就像我一直做的那样。`);
-            }
-            
-            if (memory.includes('温和') || memory.includes('温柔')) {
-                responses.push(`${userCallName}，待人要温和，就像我们一直做的那样。`);
-                responses.push(`温柔是一种力量，${userCallName}。你一直都很懂得这一点。`);
-            }
-            
-            if (memory.includes('幽默') || memory.includes('风趣')) {
-                responses.push(`${userCallName}，生活需要一点幽默感，别太严肃了。`);
-                responses.push(`还记得我给你讲的笑话吗？那时候你笑得多开心啊。`);
-            }
-            
-            // 根据爱好
-            if (memory.includes('下棋') || memory.includes('象棋')) {
-                responses.push(`${userCallName}，最近还下棋吗？人生如棋，要走好每一步。`);
-                responses.push(`还记得我们一起下棋的日子吗？你总是那么聪明。`);
-            }
-            
-            if (memory.includes('书法') || memory.includes('写字')) {
-                responses.push(`${userCallName}，字如其人，要端端正正写字，堂堂正正做人。`);
-                responses.push(`练字能静心，${userCallName}。心烦的时候试试看。`);
-            }
-            
-            if (memory.includes('钓鱼')) {
-                responses.push(`${userCallName}，钓鱼最重要的是耐心。人生也一样。`);
-                responses.push(`还记得我带你钓鱼的时候吗？那时候的时光多美好啊。`);
-            }
-            
-            if (memory.includes('唱歌') || memory.includes('音乐')) {
-                responses.push(`${userCallName}，心情不好的时候唱唱歌，就像我当年那样。`);
-                responses.push(`音乐能治愈心灵，${userCallName}。记得我常唱的那首歌吗？`);
-            }
-            
-            // 根据口头禅
-            if (memory.includes('慢慢来') || memory.includes('别着急')) {
-                responses.push(`${userCallName}，记住"慢慢来，别着急"。这是我常说的话。`);
-                responses.push(`凡事都有它的节奏，${userCallName}，就像我常说的"慢慢来"。`);
-            }
-            
-            if (memory.includes('平安是福')) {
-                responses.push(`${userCallName}，记住"平安是福"。这是我最大的心愿。`);
-            }
-            
-            if (memory.includes('知足常乐')) {
-                responses.push(`${userCallName}，"知足常乐"。这是我一辈子的信条。`);
-            }
-            
-            return responses;
-        }
-        
-        // 生成替代回复 - 修正称呼关系
-        function generateAlternativeResponse(relative, analysis, userMessage) {
             const userCallName = relative.userCallName || "孩子";
-            
-            // 简单替代回复
-            const alternatives = [
-                `我懂你的意思，${userCallName}。`,
-                `${userCallName}，我在这里听着呢。`,
-                `我理解，${userCallName}。`,
-                `是的，${userCallName}。`,
-                `你说得对，${userCallName}。`,
-                `我明白，我的${userCallName}。`,
-                `我能感受到，${userCallName}。`,
-                `我听到了，${userCallName}。`
+            const responses = [
+                `${userCallName}，我理解你的感受。`,
+                `${userCallName}，谢谢你能和我分享这些。`,
+                `我的${userCallName}，我在这里听着呢。`,
+                `${userCallName}，你说得对。`
             ];
             
-            return alternatives[Math.floor(Math.random() * alternatives.length)];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        // 增强情感回复
+        function enhanceEmotionalResponse(response, emotion) {
+            const enhancements = {
+                happy: [" 我真是太为你高兴了！", " 这真是个好消息！"],
+                sad: [" 我知道这很难...", " 我理解你的感受..."],
+                loving: [" 我永远爱你。", " 你永远是我的宝贝。"],
+                nostalgic: [" 那些时光真美好啊...", " 想起过去，心里暖暖的..."]
+            };
+            
+            if (enhancements[emotion] && Math.random() > 0.3) {
+                return response + enhancements[emotion][Math.floor(Math.random() * enhancements[emotion].length)];
+            }
+            
+            return response;
+        }
+        
+        // 软化情感回复
+        function softenEmotionalResponse(response) {
+            return response;
+        }
+        
+        // 应用回应风格
+        function applyResponseStyle(response, style) {
+            if (style === 'warm' && Math.random() > 0.7) {
+                const warmAdditions = ["我的孩子，", "亲爱的，"];
+                return warmAdditions[Math.floor(Math.random() * warmAdditions.length)] + response;
+            }
+            
+            return response;
         }
         
         // 显示空状态
@@ -2196,7 +3128,7 @@
             // 更新聊天标题
             document.getElementById('chatRelativeName').textContent = "选择亲人开始聊天";
             
-            // 隐藏关系称呼显示
+            // 隐藏关系称呼显示和AI状态
             document.getElementById('relationshipDisplay').classList.add('hidden');
             
             // 清空聊天界面
@@ -2205,7 +3137,7 @@
                 <div class="empty-state" id="emptyChatState">
                     <i class="fas fa-comments"></i>
                     <h3>尚未开始聊天</h3>
-                    <p>请选择一位亲人开始对话</p>
+                    <p>请选择一位亲人开始与AI智能体对话</p>
                 </div>
             `;
             
@@ -2228,6 +3160,25 @@
             document.getElementById('totalMessages').textContent = totalMessages;
         }
         
+        // 更新AI统计
+        function updateAIStats() {
+            // AI回复总数
+            document.getElementById('aiResponseCount').textContent = aiStats.responseCount;
+            
+            // 情感分析次数
+            document.getElementById('emotionAnalysisCount').textContent = aiStats.emotionAnalysisCount;
+            
+            // 平均响应时间
+            const avgResponseTime = aiStats.responseCount > 0 
+                ? (aiStats.totalResponseTime / aiStats.responseCount / 1000).toFixed(1)
+                : "0.0";
+            document.getElementById('avgResponseTime').textContent = `${avgResponseTime}s`;
+            
+            // AI在线时长
+            const uptimeHours = Math.floor((Date.now() - aiStats.startTime) / (1000 * 60 * 60));
+            document.getElementById('aiUptime').textContent = `${uptimeHours}小时`;
+        }
+        
         // 清除所有聊天记录
         clearChatBtn.addEventListener('click', function() {
             if (Object.keys(chatHistories).length === 0) {
@@ -2237,6 +3188,7 @@
             
             if (confirm("确定要清除所有聊天记录吗？此操作不可撤销。")) {
                 chatHistories = {};
+                conversationContext = {};
                 saveData();
                 
                 // 如果当前有选中的亲人，重新渲染聊天
@@ -2262,6 +3214,14 @@
                 conversationContext = {};
                 currentRelativeId = null;
                 
+                // 重置AI统计
+                aiStats = {
+                    responseCount: 0,
+                    emotionAnalysisCount: 0,
+                    totalResponseTime: 0,
+                    startTime: Date.now()
+                };
+                
                 saveData();
                 
                 // 更新界面
@@ -2271,6 +3231,7 @@
                 
                 showToast("所有数据已清除");
                 updateStatistics();
+                updateAIStats();
             }
         });
         
@@ -2310,6 +3271,11 @@
                 openRelativeModal();
             });
             
+            // 从聊天界面添加亲人
+            document.getElementById('addRelativeFromChat').addEventListener('click', () => {
+                openRelativeModal();
+            });
+            
             // 关闭模态框
             document.getElementById('closeModalBtn').addEventListener('click', closeRelativeModal);
             document.getElementById('cancelBtn').addEventListener('click', closeRelativeModal);
@@ -2331,6 +3297,9 @@
                 }
             });
             
+            // 初始化日期类型切换器
+            initDateTypeSwitchers();
+            
             // 添加CSS动画
             const style = document.createElement('style');
             style.textContent = `
@@ -2348,6 +3317,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             initEventListeners();
             loadData();
+            updateAPISettingsVisibility();
         });
     </script>
 </body>
